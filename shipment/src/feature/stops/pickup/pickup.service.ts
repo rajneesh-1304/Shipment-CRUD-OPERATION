@@ -28,8 +28,18 @@ export class PickupService {
             throw new NotFoundException("STops not found");
         }
         let shipmentStop = isStop[0];
+        const targetStop = isStop.find(s => s.id === stopId);
         for (const stop of isStop) {
-            if(stop.shipmentStatus === 'Pending' && shipmentStop.shipmentStatus === 'Pending'){
+            if (stopId === stop.id && targetStop?.sequenceNumber === 1 && stop.status === STOPSTATUS.ARRIVED &&   stop.shipmentStatus === Status.Pending && stop.type === StopType.PICKUP) {
+                await stopRepo.update({ id: stopId }, {shipmentStatus: Status.Completed, status: STOPSTATUS.DEPARTED } );
+                return { message: "Pickup succesful" };
+            }
+
+            if (stop.sequenceNumber < isStop.find(s => s.id === stopId)?.sequenceNumber && stop.shipmentStatus !== Status.Completed) {
+                throw new BadRequestException("Previous stops not completed");
+            }
+
+            if (stop.sequenceNumber < targetStop?.sequenceNumber && stop.shipmentStatus === 'Pending') {
                 throw new BadRequestException("Previous pickup is pending");
             }
             if (stopId === stop.id && stop.status === STOPSTATUS.ARRIVED && stop.shipmentStatus === Status.Pending && stop.type === StopType.DELIVERY) {
@@ -39,10 +49,10 @@ export class PickupService {
             if (stopId === stop.id && stop.status === STOPSTATUS.DEPARTED && stop.shipmentStatus === Status.Pending && stop.type === StopType.DELIVERY) {
                 throw new BadRequestException("Cannot pickup as stop is already departed");
             }
-            
-            if (stopId === stop.id && stop.status === STOPSTATUS.ARRIVED && stop.shipmentStatus === Status.Pending && stop.type === StopType.PICKUP  && shipmentStop.sequenceNumber < stop.sequenceNumber) {
-                await stopRepo.update({ id: stopId }, { shipmentStatus: Status.Completed });
-                return {message: "Pickup succesful"};
+
+            if (stopId === stop.id && stop.status === STOPSTATUS.ARRIVED && stop.shipmentStatus === Status.Pending && stop.type === StopType.PICKUP && shipmentStop.sequenceNumber < stop.sequenceNumber) {
+                await stopRepo.update({ id: stopId }, { shipmentStatus: Status.Completed, status: STOPSTATUS.DEPARTED });
+                return { message: "Pickup succesful" };
             }
 
             if (stopId === stop.id && stop.status !== STOPSTATUS.ARRIVED && stop.shipmentStatus === Status.Pending && stop.type === StopType.PICKUP) {

@@ -21,17 +21,20 @@ export class CompleteShipmentService {
         if (!isPresent) {
             throw new BadRequestException("Shipment not found");
         }
-        const stops = await stopRepo.find({where: {shipment:{id: shipmentId}}});
-        if(!stops){
+        const stops = await stopRepo.find({ where: { shipment: { id: shipmentId } } });
+        if (!stops) {
             throw new BadRequestException("No stop is present for shipment");
         }
 
         for (const stop of stops) {
-                if(stop.shipmentStatus !== Status.Completed){
-                    throw new BadRequestException('Some stop has pending shipment ');
-                }
+            if (stop.shipmentStatus !== Status.Completed) {
+                throw new BadRequestException('Some stop has pending shipment ');
             }
-        await shipmentRepo.update({id: shipmentId}, {status: STATUS.COMPLETED});   
-        return {message: "Shipment created successfully"};
         }
+        if (isPresent.status === STATUS.COMPLETED) {
+            throw new ConflictException("Shipment already completed");
+        }
+        await shipmentRepo.update({ id: shipmentId }, { status: STATUS.COMPLETED });
+        return { message: "Shipment created successfully" };
     }
+}

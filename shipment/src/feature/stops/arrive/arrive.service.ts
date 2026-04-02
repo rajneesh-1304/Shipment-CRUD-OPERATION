@@ -29,24 +29,24 @@ export class ArriveService {
         }
         let state = false;
         for (const stop of isStop) {
-            console.log(stopId, stop.id, stop.status, 'this is the answer');
-            if(stopId === stop.id && stop.status === STOPSTATUS.ARRIVED){
+
+            if (stopId === stop.id && stop.status === STOPSTATUS.ARRIVED) {
                 throw new BadRequestException('Cannot arrive at already arrived location');
             }
 
-            if (stopId === stop.id && stop.status === STOPSTATUS.TRANSIT && stop.shipmentStatus === Status.Pending  && !state) {
+            if (stopId === stop.id && stop.status === STOPSTATUS.TRANSIT && stop.shipmentStatus === Status.Pending && !state) {
                 await stopRepo.update({ id: stopId }, { status: STOPSTATUS.ARRIVED });
-                return {message: "Arrived at location"};
+                return { message: "Arrived at location" };
             }
 
-            if (stopId === stop.id && stop.status === STOPSTATUS.DEPARTED && stop.shipmentStatus === Status.Pending ) {
+            if (stopId === stop.id && stop.status === STOPSTATUS.DEPARTED && stop.shipmentStatus === Status.Pending) {
                 throw new BadRequestException("Cannot arrive at departed location");
-            } 
-            if(stop.status === 'DEPARTED' ){
-                state =true;
+            }
+            if (stop.status === 'DEPARTED') {
+                state = true;
             }
         }
-        
+
         throw new BadRequestException('Cannot arrive at non existing stop');
 
     }

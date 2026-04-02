@@ -28,8 +28,19 @@ export class DeliveryService {
             throw new NotFoundException("STops not found");
         }
         let shipmentStop = isStop[0];
+        const targetStop = isStop.find(s => s.id === stopId);
         for (const stop of isStop) {
-            if(stop.shipmentStatus === 'Pending' && shipmentStop.shipmentStatus === 'Pending'){
+            if ( stopId === stop.id &&  targetStop?.sequenceNumber === 1 &&  stop.status === STOPSTATUS.ARRIVED && stop.shipmentStatus === Status.Pending &&  stop.type === StopType.DELIVERY
+            ) {
+                await stopRepo.update({ id: stopId }, { shipmentStatus: Status.Completed,  status: STOPSTATUS.DEPARTED});
+                return { message: "Delivery succesful" };
+            }
+
+            if (stop.sequenceNumber < isStop.find((s) => s.id === stopId)?.sequenceNumber && stop.shipmentStatus !== Status.Completed) {
+                throw new BadRequestException("Previous stops not completed");
+            }
+
+            if (stop.id !== shipmentStop.id &&  stop.shipmentStatus === 'Pending' && shipmentStop.shipmentStatus === 'Pending') {
                 throw new BadRequestException("Previous delivery is pending");
             }
             if (stopId === stop.id && stop.status === STOPSTATUS.ARRIVED && stop.shipmentStatus === Status.Pending && stop.type === StopType.PICKUP) {
@@ -41,8 +52,8 @@ export class DeliveryService {
             }
 
             if (stopId === stop.id && stop.status === STOPSTATUS.ARRIVED && stop.shipmentStatus === Status.Pending && stop.type === StopType.DELIVERY) {
-                await stopRepo.update({ id: stopId }, { shipmentStatus: Status.Completed });
-                return {message: "Delivery succesful"};
+                await stopRepo.update({ id: stopId }, { shipmentStatus: Status.Completed, status: STOPSTATUS.DEPARTED });
+                return { message: "Delivery succesful" };
             }
 
             if (stopId === stop.id && stop.status !== STOPSTATUS.ARRIVED && stop.shipmentStatus === Status.Pending && stop.type === StopType.DELIVERY) {
@@ -50,7 +61,7 @@ export class DeliveryService {
             }
             shipmentStop = stop;
         }
-        
+
         throw new BadRequestException('Cannot delivery at non existing stop');
 
     }

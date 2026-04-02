@@ -12,7 +12,11 @@ export class CreateShipmentService {
     constructor(private readonly dataSource: DataSource) { }
 
     async createShipment(data: any) {
-        if (!data.stops) {
+        if (!data.title) {
+            throw new BadRequestException('Title is required');
+        }
+
+        if (!data.stops || data.stops.length === 0) {
             throw new BadRequestException('Shipment requires at least one stop');
         }
         const shipmentRepo = this.dataSource.getRepository(Shipment);
@@ -33,13 +37,11 @@ export class CreateShipmentService {
             }
         }
 
-
         const shipment = shipmentRepo.create({
             title: data.title,
             totalStops: data.totalStops
         });
         await shipmentRepo.save(shipment);
-
 
         const promises = stops.map((stop: any) => stopRepo.create({
             sequenceNumber: stop.sequenceNumber,
@@ -48,6 +50,6 @@ export class CreateShipmentService {
         }));
         await stopRepo.save(promises);
 
-        return {message: "Shipment created successfully"};
+        return { message: "Shipment created successfully" };
     }
 }
