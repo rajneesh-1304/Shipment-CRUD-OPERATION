@@ -1,0 +1,51 @@
+services:
+
+  db:
+    image: postgres:15
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  shipment:
+    build:
+      context: ./shipment
+      dockerfile: Dockerfile
+    container_name: shipment
+    restart: always
+    ports:
+      - "3001:3001"
+    depends_on:
+      - db
+    environment:
+      PORT: ${PORT1}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      DB_NAME: ${DB_NAME}
+    volumes:
+      - ./shipment:/app
+      - /app/node_modules
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: nest-pgadmin4new
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+
+volumes:
+  pgdata:
+  pgadmin-data:
