@@ -1,15 +1,15 @@
+import { EntityManager } from '@mikro-orm/postgresql';
 import {
     BadRequestException,
     ConflictException,
     Injectable,
 } from '@nestjs/common';
-import { Shipment } from 'src/domain/entity/shipment';
-import { Stop } from 'src/domain/entity/stop';
-import { DataSource } from 'typeorm';
+import { Shipment } from 'src/domain/entity/shipment.entity';
+import { Stop } from 'src/domain/entity/stop.entity';
 
 @Injectable()
 export class CreateShipmentService {
-    constructor(private readonly dataSource: DataSource) { }
+    constructor(private readonly em: EntityManager) { }
 
     async createShipment(data: any) {
         if (!data.title) {
@@ -19,12 +19,11 @@ export class CreateShipmentService {
         if (!data.stops || data.stops.length === 0) {
             throw new BadRequestException('Shipment requires at least one stop');
         }
-        const shipmentRepo = this.dataSource.getRepository(Shipment);
-        const stopRepo = this.dataSource.getRepository(Stop);
-        const isPresent = await shipmentRepo.findOne({ where: { title: data.title } });
+        const isPresent = await this.em.findOne(Shipment, { title: data.title });
         if (isPresent) {
             throw new ConflictException("Shipment already exists");
         }
+        console.log('1')
         const stops = data.stops;
         const sequenceNumbers = new Set();
 
@@ -36,20 +35,19 @@ export class CreateShipmentService {
                 sequenceNumbers.add(stop.sequenceNumber);
             }
         }
-
-        const shipment = shipmentRepo.create({
+        console.log('2')
+        const shipment = this.em.create(Shipment, {
             title: data.title,
-            totalStops: data.totalStops
         });
-        await shipmentRepo.save(shipment);
-
-        const promises = stops.map((stop: any) => stopRepo.create({
+console.log('3')
+        stops.map((stop: any) => this.em.create(Stop, {
             sequenceNumber: stop.sequenceNumber,
             type: stop.type,
             shipment
         }));
-        await stopRepo.save(promises);
-
+        console.log('4')
+        await this.em.flush();
+        console.log('4')
         return { message: "Shipment created successfully" };
     }
 }

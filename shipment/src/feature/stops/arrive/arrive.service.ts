@@ -34,7 +34,7 @@ export class ArriveService {
                 throw new BadRequestException('Cannot arrive at already arrived location');
             }
 
-            if (stopId === stop.id && stop.status === STOPSTATUS.TRANSIT && stop.shipmentStatus === Status.Pending && !state) {
+            if (stopId === stop.id && stop.status === STOPSTATUS.TRANSIT && stop.shipmentStatus === Status.Pending && state) {
                 await stopRepo.update({ id: stopId }, { status: STOPSTATUS.ARRIVED });
                 return { message: "Arrived at location" };
             }
