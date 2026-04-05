@@ -35,11 +35,13 @@ export class StopTransformer {
         }
 
         return {
-            id: stop.id,
-            sequenceNumber: stop.sequenceNumber,
-            type: stop.type,
-            status: stop.status,
-            shipmentStatus: stop.shipmentStatus,
+            data: {
+                id: stop.id,
+                sequenceNumber: stop.sequenceNumber,
+                type: stop.type,
+                status: stop.status,
+                shipmentStatus: stop.shipmentStatus,
+            },
 
             _links: links,
 
