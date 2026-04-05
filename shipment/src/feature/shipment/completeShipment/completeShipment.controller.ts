@@ -1,14 +1,17 @@
-import { Controller, Post, Body, Res, Patch, Param, Get, Query, UseInterceptors, UploadedFiles, UploadedFile, UseGuards, UseFilters } from '@nestjs/common';
+import { Controller, Post, Body, Res, Patch, Param, Get, Query, UseInterceptors, UploadedFiles, UploadedFile, UseGuards, UseFilters, Req } from '@nestjs/common';
 import { CompleteShipmentService } from './completeShipment.service';
-import { HttpExceptionFilter } from 'src/domain/exception.filter';
-@Controller('shipment')
+
+@Controller('shipments')
 export class CompleteShipmentController {
   constructor(private readonly completeShipment: CompleteShipmentService) { }
-  @Patch('complete')
-  @UseFilters(HttpExceptionFilter)
+ 
+  @Patch(':shipmentId/complete')
   Complete(
-    @Body('shipmentId') shipmentId: string,
+    @Param('shipmentId') shipmentId: string,
+    @Req() req: any
   ) {
-    return this.completeShipment.completeShipment(shipmentId);
+    const tenantId = req.tenantId;
+    console.log("tenantId", tenantId);
+    return this.completeShipment.completeShipment(shipmentId, tenantId);
   }
 }

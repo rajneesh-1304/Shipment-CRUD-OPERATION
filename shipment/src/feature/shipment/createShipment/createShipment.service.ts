@@ -6,48 +6,38 @@ import {
 } from '@nestjs/common';
 import { Shipment } from 'src/domain/entity/shipment.entity';
 import { Stop } from 'src/domain/entity/stop.entity';
+import { ShipmentDomain } from 'src/domain/logic/shipment.domain';
+import { ShipmentTransformer } from 'src/domain/transformer/shipment.transformer';
 
 @Injectable()
 export class CreateShipmentService {
     constructor(private readonly em: EntityManager) { }
 
-    async createShipment(data: any) {
-        if (!data.title) {
-            throw new BadRequestException('Title is required');
-        }
+    async createShipment(data: any, tenantId: string) {
+    
+    ShipmentDomain.checkCreate(data);
 
-        if (!data.stops || data.stops.length === 0) {
-            throw new BadRequestException('Shipment requires at least one stop');
-        }
-        const isPresent = await this.em.findOne(Shipment, { title: data.title });
-        if (isPresent) {
-            throw new ConflictException("Shipment already exists");
-        }
-        console.log('1')
-        const stops = data.stops;
-        const sequenceNumbers = new Set();
+    const exists = await this.em.findOne(Shipment, { title: data.title, tenant: tenantId });
+    if (exists) {
+        throw new ConflictException("Already exists");
+    }
 
-        for (const stop of stops) {
-            if (stop.sequenceNumber) {
-                if (sequenceNumbers.has(stop.sequenceNumber)) {
-                    throw new BadRequestException('Sequence number cannot be duplicate');
-                }
-                sequenceNumbers.add(stop.sequenceNumber);
-            }
-        }
-        console.log('2')
-        const shipment = this.em.create(Shipment, {
-            title: data.title,
-        });
-console.log('3')
-        stops.map((stop: any) => this.em.create(Stop, {
+    const shipment = this.em.create(Shipment, {
+        title: data.title,
+        tenant: tenantId
+    });
+
+    data.stops.forEach(stop => {
+        this.em.create(Stop, {
             sequenceNumber: stop.sequenceNumber,
             type: stop.type,
-            shipment
-        }));
-        console.log('4')
-        await this.em.flush();
-        console.log('4')
-        return { message: "Shipment created successfully" };
-    }
+            shipment,
+            tenant: tenantId
+        });
+    });
+
+    await this.em.flush();
+
+    return ShipmentTransformer.response(shipment);
+}
 }

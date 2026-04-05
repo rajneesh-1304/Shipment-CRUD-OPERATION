@@ -1,53 +1,49 @@
 import {
     BadRequestException,
-    ConflictException,
     Injectable,
     NotFoundException,
 } from '@nestjs/common';
-import { Shipment } from 'src/domain/entity/shipment';
-import { Status, Stop, STOPSTATUS } from 'src/domain/entity/stop';
-import { DataSource } from 'typeorm';
+import { EntityManager } from '@mikro-orm/postgresql';
+import { Shipment } from 'src/domain/entity/shipment.entity';
+import { Stop, STOPSTATUS } from 'src/domain/entity/stop.entity';
+import { StopDomain } from 'src/domain/logic/stop.domain';
+import { StopTransformer } from 'src/domain/transformer/stop.transformer';
 
 @Injectable()
 export class ArriveService {
-    constructor(private readonly dataSource: DataSource) { }
+    constructor(private readonly em: EntityManager) { }
 
-    async arrive(shipmentId: string, stopId: string) {
+    async arrive(shipmentId: string, stopId: string, tenantId: string) {
+
         if (!shipmentId || !stopId) {
-            throw new BadRequestException('Ids are not present');
+            throw new BadRequestException('Ids are required');
         }
-        const shipmentRepo = this.dataSource.getRepository(Shipment);
-        const stopRepo = this.dataSource.getRepository(Stop);
-        const isShipment = await shipmentRepo.findOne({ where: { id: shipmentId } });
-        if (!isShipment) {
+
+        const shipment = await this.em.findOne(Shipment, { id: shipmentId, tenant: tenantId });
+        if (!shipment) {
             throw new NotFoundException("Shipment not found");
         }
 
-        const isStop = await stopRepo.find({ where: { shipment: { id: shipmentId } }, order: { sequenceNumber: "ASC" } });
-        if (!isStop) {
+        const stops = await this.em.find(
+            Stop,
+            { shipment: { id: shipmentId, tenant: tenantId } },
+            { populate: ['shipment'], orderBy: { sequenceNumber: 'ASC' } }
+        );
+
+        if (!stops.length) {
             throw new NotFoundException("Stops not found");
         }
-        let state = false;
-        for (const stop of isStop) {
 
-            if (stopId === stop.id && stop.status === STOPSTATUS.ARRIVED) {
-                throw new BadRequestException('Cannot arrive at already arrived location');
-            }
+        const result = StopDomain.getStop(stops, stopId);
+        const stop = result.stop;
+        const idx = result.idx;
+        const previousCompleted = StopDomain.isPreviousCompleted(stops, idx);
+        StopDomain.checkArrive(stop, previousCompleted);
 
-            if (stopId === stop.id && stop.status === STOPSTATUS.TRANSIT && stop.shipmentStatus === Status.Pending && state) {
-                await stopRepo.update({ id: stopId }, { status: STOPSTATUS.ARRIVED });
-                return { message: "Arrived at location" };
-            }
+        stop.status = STOPSTATUS.ARRIVED;
 
-            if (stopId === stop.id && stop.status === STOPSTATUS.DEPARTED && stop.shipmentStatus === Status.Pending) {
-                throw new BadRequestException("Cannot arrive at departed location");
-            }
-            if (stop.status === 'DEPARTED') {
-                state = true;
-            }
-        }
+        await this.em.flush();
 
-        throw new BadRequestException('Cannot arrive at non existing stop');
-
+        return StopTransformer.response(stop);
     }
 }

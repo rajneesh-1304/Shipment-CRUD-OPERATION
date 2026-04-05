@@ -1,6 +1,7 @@
 import { defineEntity, InferEntity, p } from '@mikro-orm/core';
 import { Stop } from './stop.entity';
 import { v4 } from 'uuid';
+import { Tenant } from './tenant.entity';
 
 export enum STATUS{
     PENDING = "PENDING",
@@ -17,6 +18,7 @@ export const Shipment = defineEntity({
     updatedAt: p.datetime()
       .onCreate(() => new Date())
       .onUpdate(() => new Date()),
+    tenant: () => p.manyToOne(Tenant),
     stops: () => p.oneToMany(Stop).mappedBy('shipment'),
   },
 });

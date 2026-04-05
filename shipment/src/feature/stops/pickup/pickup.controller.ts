@@ -1,12 +1,13 @@
-import { Controller, Post, Body, Res, Patch, Param, Get, Query, UseInterceptors, UploadedFiles, UploadedFile, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Res, Patch, Param, Get, Query, UseInterceptors, UploadedFiles, UploadedFile, UseGuards, UseFilters } from '@nestjs/common';
 import { PickupService } from './pickup.service';
-@Controller('stop')
+
+@Controller('shipments/:shipmentId/stops')
 export class PickupController {
   constructor(private readonly pickupService: PickupService) { }
-  @Patch('pick')
+  @Patch(':stopId/pickup')
   pickup(
-    @Body('shipmentId') shipmentId: string,
-    @Body('stopId') stopId: string,
+    @Param('shipmentId') shipmentId: string,
+    @Param('stopId') stopId: string,
   ) {
     return this.pickupService.pickup(shipmentId, stopId);
   }

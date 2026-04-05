@@ -1,6 +1,6 @@
 import { Migration } from '@mikro-orm/migrations';
 
-export class CreateStop20260330090099 extends Migration {
+export class CreateShipment2026033055566 extends Migration {
   async up(): Promise<void> {
     this.addSql(`create type "stop_type_enum" as enum ('PICKUP', 'DELIVERY');`);
     this.addSql(`create type "stop_status_enum" as enum ('ARRIVED', 'TRANSIT', 'DEPARTED');`);
@@ -11,11 +11,12 @@ export class CreateStop20260330090099 extends Migration {
         "id" uuid not null,
         "sequence_number" int not null,
         "type" "stop_type_enum" not null,
-        "status" "stop_status_enum" not null default 'DEPARTED',
+        "status" "stop_status_enum" not null default 'TRANSIT',
         "shipment_status" "status_enum" not null default 'Pending',
         "created_at" timestamptz not null,
         "updated_at" timestamptz not null,
         "shipment_id" uuid not null,
+        "tenant_id" uuid not null,
         constraint "stop_pkey" primary key ("id")
       );
     `);
@@ -28,6 +29,16 @@ export class CreateStop20260330090099 extends Migration {
       on update cascade
       on delete no action;
     `);
+
+    this.addSql(`
+      alter table "stop"
+      add constraint "stop_tenant_id_foreign"
+      foreign key ("tenant_id")
+      references "tenant" ("id")
+      on update cascade
+      on delete cascade;
+    `);
+
   }
 
   async down(): Promise<void> {

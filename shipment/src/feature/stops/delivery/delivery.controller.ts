@@ -1,13 +1,14 @@
-import { Controller, Post, Body, Res, Patch, Param, Get, Query, UseInterceptors, UploadedFiles, UploadedFile, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Res, Patch, Param, Get, Query, UseInterceptors, UploadedFiles, UploadedFile, UseGuards, UseFilters } from '@nestjs/common';
 import { DeliveryService } from './delivery.service';
-@Controller('stop')
+
+@Controller('shipments/:shipmentId/stops')
 export class DeliveryController {
   constructor(private readonly deliveryService: DeliveryService) { }
-  @Patch('delivery')
-    delivery(
-      @Body('shipmentId') shipmentId: string,
-      @Body('stopId') stopId: string,
-    ){
-      return this.deliveryService.delivery(shipmentId, stopId);
-    }
+  @Patch(':stopId/delivery')
+  delivery(
+    @Param('shipmentId') shipmentId: string,
+    @Param('stopId') stopId: string,
+  ) {
+    return this.deliveryService.delivery(shipmentId, stopId);
+  }
 }

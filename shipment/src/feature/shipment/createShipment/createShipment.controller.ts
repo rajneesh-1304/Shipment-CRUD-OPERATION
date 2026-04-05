@@ -1,14 +1,16 @@
-import { Controller, Post, Body, Res, Patch, Param, Get, Query, UseInterceptors, UploadedFiles, UploadedFile, UseGuards, UseFilters } from '@nestjs/common';
+import { Controller, Post, Body, UseFilters, Req } from '@nestjs/common';
 import { CreateShipmentService } from './createShipment.service';
 import { HttpExceptionFilter } from 'src/domain/exception.filter';
-@Controller('shipment')
+
+@Controller('shipments')
 export class CreateShipmentController {
   constructor(private readonly shipmentService: CreateShipmentService) { }
-  @Post('create')
-  @UseFilters(HttpExceptionFilter)
+  @Post()
   createShipment(
     @Body() data: any,
+    @Req() req: any
   ) {
-    return this.shipmentService.createShipment(data);
+    const tenantId = req.tenantId;
+    return this.shipmentService.createShipment(data, tenantId);
   }
 }
