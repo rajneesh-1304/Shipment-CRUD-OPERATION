@@ -1,4 +1,6 @@
+import { plainToInstance } from "class-transformer";
 import { STOPSTATUS, Status, StopType } from "src/domain/entity/stop.entity";
+import { StopDto } from "../dto/stop.dto";
 
 export class StopTransformer {
 
@@ -7,6 +9,10 @@ export class StopTransformer {
         const shipmentId = stop.shipment?.id;
 
         const links: any = {};
+
+        const data = plainToInstance(StopDto, stop, {
+            excludeExtraneousValues: true
+        });
 
         if (
             stop.status === STOPSTATUS.ARRIVED &&
@@ -35,13 +41,7 @@ export class StopTransformer {
         }
 
         return {
-            data: {
-                id: stop.id,
-                sequenceNumber: stop.sequenceNumber,
-                type: stop.type,
-                status: stop.status,
-                shipmentStatus: stop.shipmentStatus,
-            },
+            data,
 
             _links: links,
 
