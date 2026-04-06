@@ -21,6 +21,7 @@ export enum Status{
 
 export const Stop = defineEntity({
   name: 'Stop',
+  schema: '*',
   properties: {
     id: p.uuid().primary().onCreate(() => v4()),
     sequenceNumber: p.integer(),
@@ -32,7 +33,6 @@ export const Stop = defineEntity({
       .onCreate(() => new Date())
       .onUpdate(() => new Date()),
     shipment: () => p.manyToOne(Shipment),
-    tenant: () => p.manyToOne(Tenant),
   },
 });
 

@@ -10,6 +10,7 @@ export enum STATUS{
 
 export const Shipment = defineEntity({
   name: 'Shipment',
+  schema: '*',
   properties: {
     id: p.uuid().primary().onCreate(() => v4()),
     title: p.string(),
@@ -18,7 +19,6 @@ export const Shipment = defineEntity({
     updatedAt: p.datetime()
       .onCreate(() => new Date())
       .onUpdate(() => new Date()),
-    tenant: () => p.manyToOne(Tenant),
     stops: () => p.oneToMany(Stop).mappedBy('shipment'),
   },
 });

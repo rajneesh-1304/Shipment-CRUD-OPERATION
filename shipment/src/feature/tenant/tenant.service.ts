@@ -1,6 +1,7 @@
 import { EntityManager } from '@mikro-orm/postgresql';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Tenant } from 'src/domain/entity/tenant.entity';
+import { migrateTenants } from 'src/infra/scripts/migrate-tenants';
 
 @Injectable()
 export class TenantService {
@@ -15,9 +16,10 @@ export class TenantService {
         const tenant = this.em.create(Tenant, {
             name: name,
         });
-
         await this.em.flush();
-
+        process.env.DB_SCHEMA = tenant.name;
+        
+        migrateTenants(tenant.name);
         return {
             id: tenant.id,
             name: tenant.name,

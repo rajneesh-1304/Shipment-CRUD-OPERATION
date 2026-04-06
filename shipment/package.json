@@ -22,7 +22,12 @@
     "migration:create": "npm run mikro-orm -- migration:create",
     "migration:up": "npm run mikro-orm -- migration:up",
     "migration:down": "npm run mikro-orm -- migration:down",
-    "migration:down:all": "npm run mikro-orm -- migration:down --to 0"
+    "migration:down:all": "npm run mikro-orm -- migration:down --to 0",
+    "dispatch-messages": "node dist/infra/bootstrap/dispatch.bootstrap.js",
+    "dispatch": "ts-node src/infra/bootstrap/dispatch.bootstrap.ts",
+    "handle-messages": "node dist/infra/bootstrap/consumer.bootstrap.js",
+    "handle": "ts-node src/infra/bootstrap/consumer.bootstrap.ts",
+    "migrate:tenants": "ts-node src/infra/scripts/migrate-tenants.ts"
   },
   "dependencies": {
     "@mikro-orm/core": "^6.6.12",
@@ -36,6 +41,7 @@
     "@nestjs/typeorm": "^11.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
+    "nest-commander": "^3.20.1",
     "pg": "^8.20.0",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
@@ -84,6 +90,8 @@
   },
   "mikro-orm": {
     "useTsNode": true,
-    "configPaths": ["dist/mikro-orm.config.js"]
-}
+    "configPaths": [
+      "dist/mikro-orm.config.js"
+    ]
+  }
 }

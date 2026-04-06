@@ -9,6 +9,8 @@ import { HttpExceptionFilter } from './domain/exception.filter';
 import { StopModule } from './feature/stops/stop.module';
 import { TenantModule } from './feature/tenant/tenant.module';
 import { TenantMiddleware } from './infra/middleware/middleware';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+// import {RequestContextModule} from 'nestjs-request-context'
 
 @Module({
   imports: [
@@ -17,13 +19,15 @@ import { TenantMiddleware } from './infra/middleware/middleware';
     }), 
     ShipmentModule,
     StopModule,
-    TenantModule
+    TenantModule,
+    ConfigModule
+    // RequestContextModule
   ],
   controllers: [AppController],
   providers: [AppService,{
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
-    },
+    },ConfigService
   ]
 })
 export class AppModule implements NestModule {   
