@@ -11,7 +11,6 @@ const databaseConfig: Options = defineConfig({
     host: process.env.DB_HOST ?? "db",
     user: process.env.DB_USER ?? "postgres",
     password: process.env.DB_PASSWORD ?? "postgres",
-    schema: configService.get<string>('DB_SCHEMA'),
     entities: ['dist/domain/entity/**/*.entity.js'],
     entitiesTs: ['src/domain/entity/**/*.entity.ts'],
     debug: true,
@@ -25,7 +24,8 @@ const databaseConfig: Options = defineConfig({
         fileName(timestamp, name) {
             return `Migration${timestamp}_${name}`;
         },
-    }
+        snapshot: false
+    },
 });
 
 export default databaseConfig;

@@ -1,14 +1,22 @@
 import { MikroORM } from "@mikro-orm/postgresql";
-import databaseConfig from "src/mikro-orm.config";
+import { Injectable } from "@nestjs/common";
 
-export async function migrateTenants(schema) {
-    const orm = await MikroORM.init(databaseConfig);
-    const s: any = {
-        DB_SCHEMA: schema
+@Injectable()
+export class CreateSchema {
+    constructor(private readonly orm: MikroORM) {}
+
+    async createSchema(schema) {
+
+        //     const orm = await MikroORM.init({
+        //         ...databaseConfig,
+        //         schema
+        //     });
+        
+        this.orm.config.set('schema', schema);
+        await this.orm.em.getConnection().execute(`create schema if not exists ${schema}`)
+        await this.orm.em.getConnection().execute(
+            `set search_path to "${schema}"`
+        );
+        await this.orm.migrator.up();
     }
-    process.env.DB_SCHEMA = schema;
-
-    await orm.migrator.up(s);
-
-    await orm.close();
 }
