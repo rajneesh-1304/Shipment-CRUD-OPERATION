@@ -14,10 +14,13 @@ export class TenantMiddleware implements NestMiddleware {
             }
             req.tenantId = tenantId;
             try {
-                const isExists = await em.findOne(Tenant, { id: tenantId }, {schema:"public"});
-                if(isExists){
+                const isExists = await em.findOne(Tenant, { id: tenantId }, { schema: "public" });
+                if (isExists) {
                     req.tenant = isExists.name;
                 }
+                await this.orm.em.getContext().getConnection().execute(
+                    `set search_path to "${isExists.name}"`
+                );
             } catch (error) {
                 console.log(error);
             }

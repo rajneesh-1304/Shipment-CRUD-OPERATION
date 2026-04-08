@@ -11,20 +11,20 @@ import { ShipmentTransformer } from 'src/domain/transformer/shipment.transformer
 export class CreateShipmentService {
     constructor(private readonly orm: MikroORM) { }
 
-    async createShipment(data: any, tenantName: string) {
+    async createShipment(data: any, ) {
     
     ShipmentDomain.checkCreate(data);
     const em = this.orm.em.getContext();
     const shipment = em.create(Shipment, {
         title: data.title,
-    }, {schema: tenantName});
+    },);
 
     data.stops.forEach(stop => {
         em.create(Stop, {
             sequenceNumber: stop.sequenceNumber,
             type: stop.type,
             shipment,
-        }, {schema: tenantName});
+        },);
     });
 
     await em.flush();

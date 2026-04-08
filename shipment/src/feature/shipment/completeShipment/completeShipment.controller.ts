@@ -8,9 +8,7 @@ export class CompleteShipmentController {
   @Patch(':shipmentId/complete')
   Complete(
     @Param('shipmentId') shipmentId: string,
-    @Req() req: any
   ) {
-    const tenantName = req.tenant;
-    return this.completeShipment.completeShipment(shipmentId, tenantName);
+    return this.completeShipment.completeShipment(shipmentId);
   }
 }

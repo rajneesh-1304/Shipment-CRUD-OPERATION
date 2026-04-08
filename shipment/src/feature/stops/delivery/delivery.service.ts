@@ -9,14 +9,14 @@ import { StopTransformer } from 'src/domain/transformer/stop.transformer';
 export class DeliveryService {
     constructor(private readonly orm: MikroORM) { }
 
-    async delivery(shipmentId: string, stopId: string, tenantName: string) {
+    async delivery(shipmentId: string, stopId: string) {
 
         if (!shipmentId || !stopId) {
             throw new BadRequestException('Ids are required');
         }
         const em = this.orm.em.getContext();
 
-        const shipment = await em.findOne(Shipment, { id: shipmentId }, {schema: tenantName});
+        const shipment = await em.findOne(Shipment, { id: shipmentId });
         if (!shipment) {
             throw new NotFoundException("Shipment not found");
         }
@@ -24,7 +24,7 @@ export class DeliveryService {
         const stops = await em.find(
             Stop,
             { shipment: { id: shipmentId } },
-            { populate: ['shipment'], orderBy: { sequenceNumber: 'ASC' }, schema: tenantName }
+            { populate: ['shipment'], orderBy: { sequenceNumber: 'ASC' } }
         );
 
         const result = StopDomain.getStop(stops, stopId);

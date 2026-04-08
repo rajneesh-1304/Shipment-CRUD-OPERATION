@@ -8,9 +8,7 @@ export class CreateShipmentController {
   @Post()
   createShipment(
     @Body() data: any,
-    @Req() req: any
   ) {
-    const tenantName = req.tenant;
-    return this.shipmentService.createShipment(data, tenantName);
+    return this.shipmentService.createShipment(data);
   }
 }

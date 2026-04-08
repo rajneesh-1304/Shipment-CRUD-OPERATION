@@ -12,10 +12,10 @@ import { ShipmentDomain } from 'src/domain/logic/shipment.domain';
 export class CompleteShipmentService {
     constructor(private readonly orm: MikroORM) { }
 
-    async completeShipment(id: string, schema: string) {
+    async completeShipment(id: string) {
         const em = this.orm.em.getContext();
 
-        const shipment = await em.findOne(Shipment, { id}, {schema: schema});
+        const shipment = await em.findOne(Shipment, { id});
         if (!shipment) 
             {throw new BadRequestException("Shipment not found");}
 

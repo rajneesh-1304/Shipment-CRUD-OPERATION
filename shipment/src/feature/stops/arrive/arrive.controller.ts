@@ -8,9 +8,7 @@ export class ArriveController {
   arrive(
     @Param('shipmentId') shipmentId: string,
     @Param('stopId') stopId: string,
-    @Req() req: any
   ) {
-    const tenantName = req.tenant;
-    return this.arriveService.arrive(shipmentId, stopId, tenantName);
+    return this.arriveService.arrive(shipmentId, stopId);
   }
 }
