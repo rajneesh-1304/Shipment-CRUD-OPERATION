@@ -5,8 +5,11 @@ import { DeliveryService } from './delivery/delivery.service';
 import { PickupService } from './pickup/pickup.service';
 import { ArriveController } from './arrive/arrive.controller';
 import { ArriveService } from './arrive/arrive.service';
+import { Shipment } from 'src/domain/entity/shipment.entity';
+import { MikroOrmModule } from '@mikro-orm/nestjs';
 
 @Module({
+  imports:[MikroOrmModule.forFeature({ entities: [Shipment] })],
   controllers: [DeliveryController, PickupController, ArriveController],
   providers: [DeliveryService, PickupService, ArriveService],
 })

@@ -1,5 +1,5 @@
 import { plainToInstance } from "class-transformer";
-import { STOPSTATUS, Status, StopType } from "src/domain/entity/stop.entity";
+import { STOPSTATUS, Status, StopType } from "../../domain/entity/stop.entity";
 import { StopDto } from "../dto/stop.dto";
 
 export class StopTransformer {

@@ -12,11 +12,11 @@ export class CreateSchema {
         //         schema
         //     });
         
-        this.orm.config.set('schema', schema);
-        await this.orm.em.getContext().getConnection().execute(`create schema if not exists ${schema}`)
-        await this.orm.em.getContext().getConnection().execute(
-            `set search_path to "${schema}"`
-        );
+        this.orm.config.set('contextName', schema);
+        await this.orm.em.getContext().getConnection().execute(`CREATE DATABASE "${schema}" WITH ENCODING 'UTF8' TEMPLATE template0`);
+        // await this.orm.em.getContext().getConnection().execute(
+        //     `set search_path to public`
+        // );
         await this.orm.migrator.up();
     }
 }

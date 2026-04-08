@@ -1,5 +1,4 @@
-import { Controller, Post, Body, UseFilters, Req } from '@nestjs/common';
-import { HttpExceptionFilter } from 'src/domain/exception.filter';
+import { Controller, Post, Body } from '@nestjs/common';
 import { TenantService } from './tenant.service';
 
 @Controller('tenants')

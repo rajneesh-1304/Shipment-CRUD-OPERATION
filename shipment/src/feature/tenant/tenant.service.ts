@@ -1,7 +1,7 @@
 import { EntityManager } from '@mikro-orm/postgresql';
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { Tenant } from 'src/domain/entity/tenant.entity';
-import { CreateSchema } from 'src/infra/scripts/migrate-tenants';
+import { Tenant } from '../../domain/entity/tenant.entity';
+import { CreateSchema } from '../../infra/scripts/migrate-tenants';
 
 @Injectable()
 export class TenantService {

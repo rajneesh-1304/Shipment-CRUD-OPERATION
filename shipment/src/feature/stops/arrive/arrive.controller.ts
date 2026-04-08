@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Res, Patch, Param, Get, Query, UseInterceptors, UploadedFiles, UploadedFile, UseGuards, UseFilters, Req } from '@nestjs/common';
+import { Controller, Patch, Param} from '@nestjs/common';
 import { ArriveService } from './arrive.service';
 
 @Controller('shipments/:shipmentId/stops')

@@ -15,7 +15,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 @Module({
   imports: [
     MikroOrmModule.forRootAsync({
-      useFactory:()=>databaseConfig
+      useFactory:()=>databaseConfig,
     }), 
     ShipmentModule,
     StopModule,

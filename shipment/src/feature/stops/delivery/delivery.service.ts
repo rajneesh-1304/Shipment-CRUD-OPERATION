@@ -1,9 +1,9 @@
 import { EntityManager, MikroORM } from '@mikro-orm/postgresql';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { Shipment } from 'src/domain/entity/shipment.entity';
-import { Status, Stop, STOPSTATUS } from 'src/domain/entity/stop.entity';
-import { StopDomain } from 'src/domain/logic/stop.domain';
-import { StopTransformer } from 'src/domain/transformer/stop.transformer';
+import { Shipment } from '../../../domain/entity/shipment.entity';
+import { Status, Stop, STOPSTATUS } from '../../../domain/entity/stop.entity';
+import { StopDomain } from '../../../domain/logic/stop.domain';
+import { StopTransformer } from '../../../domain/transformer/stop.transformer';
 
 @Injectable()
 export class DeliveryService {
