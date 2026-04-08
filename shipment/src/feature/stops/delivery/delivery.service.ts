@@ -14,7 +14,7 @@ export class DeliveryService {
         if (!shipmentId || !stopId) {
             throw new BadRequestException('Ids are required');
         }
-        const em = this.orm.em;
+        const em = this.orm.em.getContext();
 
         const shipment = await em.findOne(Shipment, { id: shipmentId }, {schema: tenantName});
         if (!shipment) {

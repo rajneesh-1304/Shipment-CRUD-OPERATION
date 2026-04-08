@@ -13,7 +13,7 @@ export class CompleteShipmentService {
     constructor(private readonly orm: MikroORM) { }
 
     async completeShipment(id: string, schema: string) {
-        const em = this.orm.em;
+        const em = this.orm.em.getContext();
 
         const shipment = await em.findOne(Shipment, { id}, {schema: schema});
         if (!shipment) 

@@ -14,7 +14,7 @@ export class CreateShipmentService {
     async createShipment(data: any, tenantName: string) {
     
     ShipmentDomain.checkCreate(data);
-    const em = this.orm.em;
+    const em = this.orm.em.getContext();
     const shipment = em.create(Shipment, {
         title: data.title,
     }, {schema: tenantName});

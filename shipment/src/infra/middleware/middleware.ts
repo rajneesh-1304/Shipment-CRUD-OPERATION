@@ -6,7 +6,7 @@ import { Tenant } from "src/domain/entity/tenant.entity";
 export class TenantMiddleware implements NestMiddleware {
     constructor(private readonly orm: MikroORM) { }
     async use(req: any, res: any, next: () => void) {
-        RequestContext.create(this.orm.em, async () => {
+        RequestContext.create(this.orm.em.fork(), async () => {
             const em = this.orm.em.getContext();
             const tenantId = req.headers['x-tenant-id'];
             if (!tenantId) {

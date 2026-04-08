@@ -13,8 +13,8 @@ export class CreateSchema {
         //     });
         
         this.orm.config.set('schema', schema);
-        await this.orm.em.getConnection().execute(`create schema if not exists ${schema}`)
-        await this.orm.em.getConnection().execute(
+        await this.orm.em.getContext().getConnection().execute(`create schema if not exists ${schema}`)
+        await this.orm.em.getContext().getConnection().execute(
             `set search_path to "${schema}"`
         );
         await this.orm.migrator.up();
