@@ -1,39 +1,43 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { beforeEach, describe, it } from 'node:test';
 import { CreateTenantController } from './tenant.controller';
 import { TenantService } from './tenant.service';
-import { MikroOrmModule } from '@mikro-orm/nestjs';
-import databaseConfig from '../../mikro-orm.config';
-import { Tenant } from '../../domain/entity/tenant.entity';
 import { BadRequestException } from '@nestjs/common';
-import { MikroORM } from '@mikro-orm/postgresql';
-import { UserMother } from 'src/domain/objectMother/tenant/createTenant';
+import { UserMother } from '../../domain/objectMother/tenant/createTenant';
 
-describe('TenantService', () => {
+describe('CreateTenantController', () => {
     let controller: CreateTenantController;
     let service: TenantService;
-    let orm: MikroORM;
+    const mockService = {
+        createTenant: jest.fn(),
+    };
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
-            imports: [
-                MikroOrmModule.forRootAsync({ ...databaseConfig }),
-                MikroOrmModule.forFeature([Tenant])],
             controllers: [CreateTenantController],
-            providers: [TenantService]
+            providers: [{
+                provide: TenantService,
+                useValue: mockService,
+            }]
         }).compile();
 
         controller = module.get<CreateTenantController>(CreateTenantController);
         service = module.get<TenantService>(TenantService);
-        orm = module.get<MikroORM>(MikroORM);
     })
 
     it('should save tenant', async () => {
         const data = UserMother.createTenant();
-        const exists = await orm.em.findOne(Tenant, { name: data.name });
-        if (exists) {
-            throw new BadRequestException("Tenant already exists");
-        }else{
-            throw new BadRequestException("Tenant not found");
-        }
+        mockService.createTenant.mockResolvedValue(data)
+        const result = await controller.createTenant(data.name);
+        expect(result).toEqual(data);
+        expect(service.createTenant).toHaveBeenCalledWith(data.name);
+    });
+
+    it('should throw error if tenant already exists', async () => {
+        const data = UserMother.createTenant();
+        mockService.createTenant.mockRejectedValue(
+            new BadRequestException('Tenant already exists')
+        );
+        await expect(controller.createTenant(data.name)).rejects.toThrow(
+            BadRequestException 
+        );
     });
 });

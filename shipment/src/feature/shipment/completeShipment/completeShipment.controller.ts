@@ -6,7 +6,7 @@ export class CompleteShipmentController {
   constructor(private readonly completeShipment: CompleteShipmentService) { }
  
   @Patch(':shipmentId/complete')
-  Complete(
+  CompleteShipment(
     @Param('shipmentId') shipmentId: string,
   ) {
     return this.completeShipment.completeShipment(shipmentId);

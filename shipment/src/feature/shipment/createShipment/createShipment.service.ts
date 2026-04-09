@@ -2,10 +2,10 @@ import { MikroORM } from '@mikro-orm/postgresql';
 import {
     Injectable,
 } from '@nestjs/common';
-import { Shipment } from 'src/domain/entity/shipment.entity';
-import { Stop } from 'src/domain/entity/stop.entity';
-import { ShipmentDomain } from 'src/domain/logic/shipment.domain';
-import { ShipmentTransformer } from 'src/domain/transformer/shipment.transformer';
+import { Shipment } from '../../../domain/entity/shipment.entity';
+import { Stop } from '../../../domain/entity/stop.entity';
+import { ShipmentDomain } from '../../../domain/logic/shipment.domain';
+import { ShipmentTransformer } from '../../../domain/transformer/shipment.transformer';
 
 @Injectable()
 export class CreateShipmentService {

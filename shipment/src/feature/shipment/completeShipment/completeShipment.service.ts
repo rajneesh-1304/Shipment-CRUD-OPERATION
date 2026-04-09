@@ -4,9 +4,9 @@ import {
     ConflictException,
     Injectable,
 } from '@nestjs/common';
-import { Shipment, STATUS } from 'src/domain/entity/shipment.entity';
-import { Status, Stop } from 'src/domain/entity/stop.entity';
-import { ShipmentDomain } from 'src/domain/logic/shipment.domain';
+import { Shipment, STATUS } from '../../../domain/entity/shipment.entity';
+import { Stop } from '../../../domain/entity/stop.entity';
+import { ShipmentDomain } from '../../../domain/logic/shipment.domain';
 
 @Injectable()
 export class CompleteShipmentService {
@@ -14,6 +14,9 @@ export class CompleteShipmentService {
 
     async completeShipment(id: string) {
         const em = this.orm.em.getContext();
+        if(!id){
+            throw new BadRequestException('ShipmentId is required')
+        }
 
         const shipment = await em.findOne(Shipment, { id});
         if (!shipment) 

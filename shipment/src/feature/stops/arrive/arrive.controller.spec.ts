@@ -1,44 +1,58 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { beforeEach, describe, it } from 'node:test';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { ArriveController } from './arrive.controller';
 import { ArriveService } from './arrive.service';
-import { MikroORM } from '@mikro-orm/postgresql';
-import { Shipment } from '../../../domain/entity/shipment.entity';
-import { MikroOrmModule } from '@mikro-orm/nestjs';
-import databaseConfig from '../../../mikro-orm.config';
-import { NotFoundException } from '@nestjs/common';
 
-describe('ArriveService', () => {
+
+describe('ArriveController', () => {
     let controller: ArriveController;
-    let service: ArriveService;
-    let orm: MikroORM;
+
+    const mockService = {
+        arrive: jest.fn(),
+    };
+
     beforeEach(async () => {
+        jest.clearAllMocks();
         const module: TestingModule = await Test.createTestingModule({
-            imports:[
-                MikroOrmModule.forRootAsync({...databaseConfig}),
-                MikroOrmModule.forFeature([Shipment])],
             controllers: [ArriveController],
-            providers: [ArriveService]
+            providers: [
+                {
+                    provide: ArriveService,
+                    useValue: mockService,
+                },
+            ],
         }).compile();
-
         controller = module.get<ArriveController>(ArriveController);
-        service = module.get<ArriveService>(ArriveService);
-        orm = module.get<MikroORM>(MikroORM);
-    })
-
-    it('shipmentId and stopId is required', async () => {
-        // const shipmentId ='fasdf';
-        // const stopId='fasdsf';
-        expect(service).toBeDefined();
     });
 
-    it('shipment not found', async () => {
-        const shipmentId = '09389b11-2aa8-493f-b832-2c690a4c30c9';
-        const shipment = await orm.em.findOne(Shipment, {id: shipmentId}, {schema: 'four'});
-        console.log(shipment, '------------------->>>>>>>>>>>>>>>>>>');
-        if(!shipment){
-            throw new NotFoundException("Shipment not found");
-        }
-    })
+    it('should throw error if ids are missing', async () => {
+        mockService.arrive.mockRejectedValue(
+            new BadRequestException('Ids are required')
+        );
+        await expect(controller.arrive('', '')).rejects.toThrow(
+            BadRequestException
+        )
+    });
 
+    it('should thrwo error if shipment not found', async ()=>{
+        mockService.arrive.mockRejectedValue(
+            new NotFoundException('Shipment not found')
+        );
+        await expect(controller.arrive('', '')).rejects.toThrow(
+            NotFoundException
+        )
+    });
+
+    it('should arrive successfully', async () => {
+        const shipmentId = 's1';
+        const stopId = 'st1';  
+        const response = { id: stopId };
+        mockService.arrive.mockResolvedValue(response);
+        const result = await controller.arrive(shipmentId, stopId);
+        expect(result).toEqual(response);
+        expect(mockService.arrive).toHaveBeenCalledWith(
+            shipmentId,
+            stopId
+        );
+    })
 });
