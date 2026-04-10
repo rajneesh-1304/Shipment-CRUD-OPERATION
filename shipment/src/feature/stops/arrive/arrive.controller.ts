@@ -1,4 +1,4 @@
-import { Controller, Patch, Param} from '@nestjs/common';
+import { Controller, Patch, Param, Req} from '@nestjs/common';
 import { ArriveService } from './arrive.service';
 
 @Controller('shipments/:shipmentId/stops')
@@ -8,7 +8,9 @@ export class ArriveController {
   arrive(
     @Param('shipmentId') shipmentId: string,
     @Param('stopId') stopId: string,
+    @Req() req: any
   ) {
-    return this.arriveService.arrive(shipmentId, stopId);
+    const schema = req.tenant;
+    return this.arriveService.arrive(shipmentId, stopId, schema);
   }
 }

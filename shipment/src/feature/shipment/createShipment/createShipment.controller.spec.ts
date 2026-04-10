@@ -3,9 +3,16 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { CreateShipmentController } from './createShipment.controller';
 import { CreateShipmentService } from './createShipment.service';
 import { ShipmentMother } from '../../../domain/objectMother/shipment/shipmentMother';
+import { UserMother } from '../../../domain/objectMother/tenant/createTenant';
 
 describe('CreateShipment', () => {
     let controller: CreateShipmentController;
+
+    const tenant = new UserMother();
+    const tenantName = tenant.get().name;
+    const request = {
+        tenant: tenantName
+    } as unknown as Request;
 
     const mockService = {
         createShipment: jest.fn(),
@@ -26,22 +33,26 @@ describe('CreateShipment', () => {
     });
 
     it('should throw error if data is invalid', async () => {
-        const data = ShipmentMother.create();
+        const shipment = new ShipmentMother();
+        const shipmentData = shipment.create();
         mockService.createShipment.mockRejectedValue(
             new BadRequestException('Invalid data')
         );
-        await expect(controller.createShipment(data)).rejects.toThrow(
+        await expect(controller.createShipment(shipmentData, request)).rejects.toThrow(
             BadRequestException
         )
+        expect(mockService.createShipment).toHaveBeenCalledWith(
+            shipmentData,
+            tenantName,
+        );
     });
 
     it('should create shipment successfully', async () => {
-        const data = ShipmentMother.create();
-        const response ={ id:'s1', title: data.title};
-        mockService.createShipment.mockResolvedValue(response);
-
-        const result = await controller.createShipment(data);
-        expect(result).toEqual(response);
-        expect(mockService.createShipment).toHaveBeenCalledWith(data);
-     });
+        const shipment = new ShipmentMother();
+        const data = shipment.create();
+        mockService.createShipment.mockResolvedValue(data);
+        const result = await controller.createShipment(data, request);
+        expect(result).toEqual(data);
+        expect(mockService.createShipment).toHaveBeenCalledWith(data, tenantName);
+    });
 });

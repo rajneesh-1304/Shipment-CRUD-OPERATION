@@ -13,14 +13,14 @@ import { StopTransformer } from '../../../domain/transformer/stop.transformer';
 export class ArriveService {
     constructor(private readonly orm: MikroORM) { }
 
-    async arrive(shipmentId: string, stopId: string) {
+    async arrive(shipmentId: string, stopId: string, schema: string) {
 
         if (!shipmentId || !stopId) {
             throw new BadRequestException('Ids are required');
         }
         const em = this.orm.em.getContext();
 
-        const shipment = await em.findOne(Shipment, { id: shipmentId });
+        const shipment = await em.findOne(Shipment, { id: shipmentId }, {schema: schema});
         if (!shipment) {
             throw new NotFoundException("Shipment not found");
         }
@@ -28,18 +28,19 @@ export class ArriveService {
         const stops = await em.find(
             Stop,
             { shipment: { id: shipmentId } },
-            { populate: ['shipment'], orderBy: { sequenceNumber: 'ASC' }}
+            { populate: ['shipment'], orderBy: { sequenceNumber: 'ASC' }, schema: schema}
         );
 
         if (!stops.length) {
             throw new NotFoundException("Stops not found");
         }
 
-        const result = StopDomain.getStop(stops, stopId);
+        const stopDomain = new StopDomain();
+        const result = stopDomain.getStop(stops, stopId);
         const stop = result.stop;
         const idx = result.idx;
-        const previousCompleted = StopDomain.isPreviousCompleted(stops, idx);
-        StopDomain.checkArrive(stop, previousCompleted);
+        const previousCompleted = stopDomain.isPreviousCompleted(stops, idx);
+        stopDomain.checkArrive(stop, previousCompleted);
 
         stop.status = STOPSTATUS.ARRIVED;
 

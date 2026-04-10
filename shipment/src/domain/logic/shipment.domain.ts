@@ -3,7 +3,7 @@ import { STATUS } from "../entity/shipment.entity";
 import { Status } from "../entity/stop.entity";
 
 export class ShipmentDomain {
-    static checkCreate(data: any) {
+    public checkCreate(data: any) {
         if (!data.title) {
             throw new BadRequestException("Title is required");
         }
@@ -21,7 +21,7 @@ export class ShipmentDomain {
         }
     }
 
-    static checkCompleteShipment(stops: any[], shipmentStatus: STATUS) {
+    public checkCompleteShipment(stops: any[], shipmentStatus: STATUS) {
         if (shipmentStatus === STATUS.COMPLETED) {
             throw new ConflictException("Already completed");
         }

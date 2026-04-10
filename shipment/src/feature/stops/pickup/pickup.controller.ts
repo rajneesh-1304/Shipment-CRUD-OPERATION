@@ -8,7 +8,9 @@ export class PickupController {
   pickup(
     @Param('shipmentId') shipmentId: string,
     @Param('stopId') stopId: string,
+    @Req() req: any,
   ) {
-    return this.pickupService.pickup(shipmentId, stopId);
+    const schema = req.tenant;
+    return this.pickupService.pickup(shipmentId, stopId, schema);
   }
 }

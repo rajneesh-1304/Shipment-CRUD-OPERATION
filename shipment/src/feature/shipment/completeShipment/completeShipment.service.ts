@@ -12,19 +12,19 @@ import { ShipmentDomain } from '../../../domain/logic/shipment.domain';
 export class CompleteShipmentService {
     constructor(private readonly orm: MikroORM) { }
 
-    async completeShipment(id: string) {
+    async completeShipment(id: string, schema: string) {
         const em = this.orm.em.getContext();
         if(!id){
             throw new BadRequestException('ShipmentId is required')
         }
 
-        const shipment = await em.findOne(Shipment, { id});
+        const shipment = await em.findOne(Shipment, { id}, {schema : schema});
         if (!shipment) 
             {throw new BadRequestException("Shipment not found");}
 
-        const stops = await em.find(Stop, { shipment: { id} });
-
-        ShipmentDomain.checkCompleteShipment(stops, shipment.status);
+        const stops = await em.find(Stop, { shipment: { id}}, {schema: schema});
+        const shipmentDomain = new ShipmentDomain();
+        shipmentDomain.checkCompleteShipment(stops, shipment.status);
 
         shipment.status = STATUS.COMPLETED;
 

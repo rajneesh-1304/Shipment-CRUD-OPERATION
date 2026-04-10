@@ -2,46 +2,49 @@ import { ShipmentDomain } from './shipment.domain';
 import { BadRequestException, ConflictException } from '@nestjs/common';
 import { STATUS } from '../entity/shipment.entity';
 import { Status } from '../entity/stop.entity';
+import { ShipmentMother } from '../objectMother/shipment/shipmentMother';
 
 describe('ShipmentDomain', () => {
-
+    const shipmentDomain = new ShipmentDomain();
+    const shipmentMother = new ShipmentMother();
+    const shipmentData = shipmentMother.create();
     it('should throw error if title is missing', () => {
         const data = {
-            title: '',
-            stops: [{ sequenceNumber: 1 }]
+            title: shipmentData.title,
+            stops: shipmentData.stops[0]?.sequenceNumber
         };
 
-        expect(() => ShipmentDomain.checkCreate(data)).toThrow(BadRequestException);
+        expect(() => shipmentDomain.checkCreate(data)).toThrow(BadRequestException);
     });
 
     it('should throw error if stops are missing', () => {
         const data = {
-            title: 'Test Shipment',
+            title: shipmentData.title,
             stops: []
         };
 
-        expect(() => ShipmentDomain.checkCreate(data)).toThrow(BadRequestException);
+        expect(() => shipmentDomain.checkCreate(data)).toThrow(BadRequestException);
     });
 
     it('should throw error for duplicate sequence numbers', () => {
         const data = {
-            title: 'Test Shipment',
+            title: shipmentData.title,
             stops: [
-                { sequenceNumber: 1 },
-                { sequenceNumber: 1 },
+                { sequenceNumber: shipmentData.stops[0]?.sequenceNumber },
+                { sequenceNumber: shipmentData.stops[0]?.sequenceNumber },
             ]
         };
 
-        expect(() => ShipmentDomain.checkCreate(data)).toThrow(BadRequestException);
+        expect(() => shipmentDomain.checkCreate(data)).toThrow(BadRequestException);
     });
 
     it('should throw error if shipment already completed', () => {
         const stops = [
-            { shipmentStatus: Status.Completed },
+            { shipmentStatus: shipmentData.status },
         ];
 
         expect(() =>
-            ShipmentDomain.checkCompleteShipment(stops, STATUS.COMPLETED)).toThrow(ConflictException);
+            shipmentDomain.checkCompleteShipment(stops, shipmentData.status)).toThrow(ConflictException);
     });
 
 

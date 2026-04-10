@@ -24,15 +24,17 @@ describe('CreateTenantController', () => {
     })
 
     it('should save tenant', async () => {
-        const data = UserMother.createTenant();
-        mockService.createTenant.mockResolvedValue(data)
+        const obj = new UserMother();
+        const data = obj.get();
+        mockService.createTenant.mockResolvedValue(data.name)
         const result = await controller.createTenant(data.name);
-        expect(result).toEqual(data);
+        expect(result).toEqual(data.name);
         expect(service.createTenant).toHaveBeenCalledWith(data.name);
     });
 
     it('should throw error if tenant already exists', async () => {
-        const data = UserMother.createTenant();
+        const obj = new UserMother();
+        const data = obj.get();
         mockService.createTenant.mockRejectedValue(
             new BadRequestException('Tenant already exists')
         );

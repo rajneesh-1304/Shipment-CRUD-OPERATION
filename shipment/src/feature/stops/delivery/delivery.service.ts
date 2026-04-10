@@ -9,14 +9,14 @@ import { StopTransformer } from '../../../domain/transformer/stop.transformer';
 export class DeliveryService {
     constructor(private readonly orm: MikroORM) { }
 
-    async delivery(shipmentId: string, stopId: string) {
+    async delivery(shipmentId: string, stopId: string, schema: string) {
 
         if (!shipmentId || !stopId) {
             throw new BadRequestException('Ids are required');
         }
         const em = this.orm.em.getContext();
 
-        const shipment = await em.findOne(Shipment, { id: shipmentId });
+        const shipment = await em.findOne(Shipment, { id: shipmentId }, {schema: schema});
         if (!shipment) {
             throw new NotFoundException("Shipment not found");
         }
@@ -24,14 +24,14 @@ export class DeliveryService {
         const stops = await em.find(
             Stop,
             { shipment: { id: shipmentId } },
-            { populate: ['shipment'], orderBy: { sequenceNumber: 'ASC' } }
+            { populate: ['shipment'], orderBy: { sequenceNumber: 'ASC' }, schema: schema }
         );
-
-        const result = StopDomain.getStop(stops, stopId);
+        const stopDomain = new StopDomain();
+        const result = stopDomain.getStop(stops, stopId);
         const stop = result.stop;
         const idx = result.idx;
-        const previousCompleted = StopDomain.isPreviousCompleted(stops, idx);
-        StopDomain.checkDelivery(stop, previousCompleted);
+        const previousCompleted = stopDomain.isPreviousCompleted(stops, idx);
+        stopDomain.checkDelivery(stop, previousCompleted);
 
         stop.shipmentStatus = Status.Completed;
         stop.status = STOPSTATUS.DEPARTED;

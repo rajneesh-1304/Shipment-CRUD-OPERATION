@@ -8,7 +8,9 @@ export class DeliveryController {
   delivery(
     @Param('shipmentId') shipmentId: string,
     @Param('stopId') stopId: string,
+    @Req() req: any
   ) {
-    return this.deliveryService.delivery(shipmentId, stopId);
+    const schema = req.tenant;
+    return this.deliveryService.delivery(shipmentId, stopId, schema);
   }
 }

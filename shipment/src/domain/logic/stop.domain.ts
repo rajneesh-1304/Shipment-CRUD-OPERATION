@@ -3,7 +3,7 @@ import { STOPSTATUS, Status, StopType } from "../entity/stop.entity";
 
 export class StopDomain {
 
-    static getStop(stops: any[], stopId: string) {
+    public getStop(stops: any[], stopId: string) {
         const idx = stops.findIndex(s => s.id === stopId);
         if (idx === -1) {
             throw new NotFoundException("Stop not found");
@@ -11,7 +11,7 @@ export class StopDomain {
         return { stop: stops[idx], idx };
     }
 
-    static isPreviousCompleted(stops: any[], idx: number) {
+    public isPreviousCompleted(stops: any[], idx: number) {
         if (idx === 0) return true;
         if(stops[idx-1].shipmentStatus === Status.Completed && stops[idx-1].status === STOPSTATUS.DEPARTED){
             return true;
@@ -20,7 +20,7 @@ export class StopDomain {
         return false;
     }
 
-    static checkArrive(stop, previousCompleted: boolean) {
+    public checkArrive(stop, previousCompleted: boolean) {
 
         if (stop.status === STOPSTATUS.ARRIVED) {
             throw new ConflictException("Already arrived");
@@ -35,7 +35,7 @@ export class StopDomain {
         }
     }
 
-    static checkPickup(stop, previousCompleted: boolean) {
+    public checkPickup(stop, previousCompleted: boolean) {
 
         if (stop.type !== StopType.PICKUP) {
             throw new ConflictException("Not a pickup stop");
@@ -58,7 +58,7 @@ export class StopDomain {
         }
     }
 
-    static checkDelivery(stop, previousCompleted: boolean) {
+    public checkDelivery(stop, previousCompleted: boolean) {
 
         if (stop.type !== StopType.DELIVERY) {
             throw new ConflictException("Not a delivery stop");

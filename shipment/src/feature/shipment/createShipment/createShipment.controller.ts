@@ -7,7 +7,9 @@ export class CreateShipmentController {
   @Post()
   createShipment(
     @Body() data: any,
+    @Req() req: any
   ) {
-    return this.shipmentService.createShipment(data);
+    const schema = req.tenant;
+    return this.shipmentService.createShipment(data, schema);
   }
 }
