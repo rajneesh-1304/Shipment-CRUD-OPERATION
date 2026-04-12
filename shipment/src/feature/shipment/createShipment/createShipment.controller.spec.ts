@@ -4,6 +4,7 @@ import { CreateShipmentController } from './createShipment.controller';
 import { CreateShipmentService } from './createShipment.service';
 import { ShipmentMother } from '../../../domain/objectMother/shipment/shipmentMother';
 import { UserMother } from '../../../domain/objectMother/tenant/createTenant';
+import { StopMother } from '../../../domain/objectMother/stop/stop.mother';
 
 describe('CreateShipment', () => {
     let controller: CreateShipmentController;
@@ -33,8 +34,7 @@ describe('CreateShipment', () => {
     });
 
     it('should throw error if data is invalid', async () => {
-        const shipment = new ShipmentMother();
-        const shipmentData = shipment.create();
+        const shipmentData = new ShipmentMother().withStopDetails(new StopMother()).create();
         mockService.createShipment.mockRejectedValue(
             new BadRequestException('Invalid data')
         );
@@ -48,8 +48,7 @@ describe('CreateShipment', () => {
     });
 
     it('should create shipment successfully', async () => {
-        const shipment = new ShipmentMother();
-        const data = shipment.create();
+        const data = new ShipmentMother().withStopDetails(new StopMother()).create();
         mockService.createShipment.mockResolvedValue(data);
         const result = await controller.createShipment(data, request);
         expect(result).toEqual(data);

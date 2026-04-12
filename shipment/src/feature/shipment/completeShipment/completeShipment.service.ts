@@ -3,6 +3,7 @@ import {
     BadRequestException,
     ConflictException,
     Injectable,
+    NotFoundException,
 } from '@nestjs/common';
 import { Shipment, STATUS } from '../../../domain/entity/shipment.entity';
 import { Stop } from '../../../domain/entity/stop.entity';
@@ -20,7 +21,7 @@ export class CompleteShipmentService {
 
         const shipment = await em.findOne(Shipment, { id}, {schema : schema});
         if (!shipment) 
-            {throw new BadRequestException("Shipment not found");}
+            {throw new NotFoundException("Shipment not found");}
 
         const stops = await em.find(Stop, { shipment: { id}}, {schema: schema});
         const shipmentDomain = new ShipmentDomain();

@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { StopMother } from '../stop/stop.mother';
-import { Shipment } from '../../../domain/entity/shipment.entity';
+import { Shipment, STATUS } from '../../../domain/entity/shipment.entity';
 
 export class ShipmentMother {
   private stops: StopMother;
@@ -8,6 +8,7 @@ export class ShipmentMother {
   constructor(private readonly params: {
     id?: string;
     title?: string;
+    status?: STATUS;
     stops?: any[];
   } = {}) {
     this.params = params;
@@ -23,6 +24,7 @@ export class ShipmentMother {
     shipment.id = this.params.id || faker.string.uuid();
     shipment.title = this.params.title || faker.company.name();
     shipment.stops = this.params.stops || [];
+    shipment.status = this.params.status || STATUS.PENDING;
 
     if (this.stops) {
       let randomStops = Math.floor(Math.random() * 5) + 1;

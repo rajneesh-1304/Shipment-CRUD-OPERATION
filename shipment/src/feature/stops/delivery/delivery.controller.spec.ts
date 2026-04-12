@@ -5,14 +5,13 @@ import { DeliveryService } from './delivery.service';
 import { faker } from '@faker-js/faker';
 import { ShipmentMother } from '../../../domain/objectMother/shipment/shipmentMother';
 import { UserMother } from '../../../domain/objectMother/tenant/createTenant';
+import { StopMother } from '../../../domain/objectMother/stop/stop.mother';
+import { STOPSTATUS, StopType } from '../../../domain/entity/stop.entity';
 
 describe('DeliveryController', () => {
     let controller: DeliveryController;
-    const tenant = new UserMother();
-    const tenantName = tenant.get().name;
-    const request = {
-        tenant: tenantName
-    } as unknown as Request;
+    let tenantName: string;
+    let request: any;
 
 
     const mockService = {
@@ -21,6 +20,9 @@ describe('DeliveryController', () => {
 
     beforeEach(async () => {
         jest.clearAllMocks();
+        const tenant = new UserMother().get();
+        tenantName = tenant.name;
+        request = { tenant: tenantName };
         const module: TestingModule = await Test.createTestingModule({
             controllers: [DeliveryController],
             providers: [
@@ -64,11 +66,16 @@ describe('DeliveryController', () => {
     });
 
     it('should complete delivery successfully', async () => {
-        const shipment = new ShipmentMother();
-        const shipmentData = shipment.create();
+        const stop = new StopMother({
+            type: StopType.DELIVERY,
+            status: STOPSTATUS.ARRIVED,
+            sequenceNumber: 2,
+        }).get();
+         const shipmentData = new ShipmentMother({
+            stops: [stop],
+        }).create();
         const shipmentId = shipmentData.id;
-        const random = Math.floor(Math.random() * 5) + 1;
-        const stopId = shipmentData.stops[random]?.id;
+        const stopId = stop.id;
         const response = { id: stopId };
         mockService.delivery.mockResolvedValue(response);
         const result = await controller.delivery(shipmentId, stopId, request);

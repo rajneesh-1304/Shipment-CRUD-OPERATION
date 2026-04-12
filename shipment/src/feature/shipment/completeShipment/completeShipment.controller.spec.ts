@@ -5,6 +5,7 @@ import { CompleteShipmentController } from './completeShipment.controller';
 import { ShipmentMother } from '../../../domain/objectMother/shipment/shipmentMother';
 import { faker } from '@faker-js/faker';
 import { UserMother } from '../../../domain/objectMother/tenant/createTenant';
+import { StopMother } from '../../../domain/objectMother/stop/stop.mother';
 
 describe('CompleteShipmentController', () => {
     let controller: CompleteShipmentController;
@@ -64,8 +65,7 @@ describe('CompleteShipmentController', () => {
     });
 
     it('should complete shipment successfully', async () => {
-        const shipment = new ShipmentMother();
-        const shipmentData = shipment.create();
+        const shipmentData = new ShipmentMother().withStopDetails(new StopMother()).create();
         const response = { message: "Shipment completed successfully" };
         mockService.completeShipment.mockResolvedValue(response);
 

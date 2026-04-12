@@ -41,5 +41,6 @@ describe('CreateTenantController', () => {
         await expect(controller.createTenant(data.name)).rejects.toThrow(
             BadRequestException 
         );
+        expect(service.createTenant).toHaveBeenCalledWith(data.name);
     });
 });

@@ -1,7 +1,6 @@
 import { Expose } from 'class-transformer';
 
 export class StopDto {
-
     @Expose()
     id: string;
 

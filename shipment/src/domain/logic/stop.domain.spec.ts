@@ -3,105 +3,114 @@ import { ConflictException, NotFoundException } from '@nestjs/common';
 import { ShipmentMother } from '../objectMother/shipment/shipmentMother';
 import { StopMother } from '../objectMother/stop/stop.mother';
 import { faker } from '@faker-js/faker';
+import { StopType, Status, STOPSTATUS } from '../entity/stop.entity';
 
 describe('StopDomain', () => {
     const stopDomain = new StopDomain();
-    const shipmentMother = new ShipmentMother();
-    const shipmentData = shipmentMother.create();
 
-    const stopMother = new StopMother();
-    const stopData = stopMother.get();
+    const shipmentData = new ShipmentMother().withStopDetails(new StopMother()).create();
 
     it('should throw error if stop not found', () => {
-        const stops = shipmentData.stops;
         const id = faker.string.uuid();
-        expect(() => stopDomain.getStop(stops, id)).toThrow(NotFoundException);
+        expect(() => stopDomain.getStop(shipmentData.stops, id))
+            .toThrow(NotFoundException);
     });
 
-
     it('should throw if already arrived', () => {
-        const stop = { status: stopData.status };
+        const stop = new StopMother({
+            status: STOPSTATUS.ARRIVED
+        }).get();
 
-        expect(() => stopDomain.checkArrive(stop, false)).toThrow(ConflictException);
+        expect(() => stopDomain.checkArrive(stop, true))
+            .toThrow(ConflictException);
     });
 
     it('should throw if already departed', () => {
-        const stop = { status: stopData.status };
+        const stop = new StopMother({
+            status: STOPSTATUS.DEPARTED
+        }).get();
 
-        expect(() => stopDomain.checkArrive(stop, false)).toThrow(ConflictException);
+        expect(() => stopDomain.checkArrive(stop, true))
+            .toThrow(ConflictException);
     });
 
     it('should throw if previous not completed', () => {
-        const stop = { status: stopData.status };
+        const stop = new StopMother({
+            shipmentStatus: Status.Pending
+        }).get();
 
-        expect(() => stopDomain.checkArrive(stop, false)).toThrow(ConflictException);
+        expect(() => stopDomain.checkArrive(stop, false))
+            .toThrow(ConflictException);
     });
 
-
     it('should throw if not pickup type', () => {
-        const stop = { type: stopData.type };
+        const stop = new StopMother({
+            type: StopType.DELIVERY,
+            status: STOPSTATUS.ARRIVED
+        }).get();
 
-        expect(() => stopDomain.checkPickup(stop, true)).toThrow(ConflictException);
+        expect(() => stopDomain.checkPickup(stop, true))
+            .toThrow(ConflictException);
     });
 
     it('should throw if already picked', () => {
-        const stop = {
-            type: stopData.type,
-            shipmentStatus: stopData.shipmentStatus,
-        };
+        const stop = new StopMother({
+            type: StopType.PICKUP,
+            status: STOPSTATUS.DEPARTED
+        }).get();
 
-        expect(() => stopDomain.checkPickup(stop, true)).toThrow(ConflictException);
+        expect(() => stopDomain.checkPickup(stop, true))
+            .toThrow(ConflictException);
     });
 
     it('should throw if not arrived', () => {
-        const stop = {
-            type: stopData.type,
-            shipmentStatus: stopData.shipmentStatus,
-            status: stopData.status,
-        };
+        const stop = new StopMother({
+            type: StopType.PICKUP,
+            status: STOPSTATUS.TRANSIT
+        }).get();
 
-        expect(() => stopDomain.checkPickup(stop, true)).toThrow(ConflictException);
+        expect(() => stopDomain.checkPickup(stop, true))
+            .toThrow(ConflictException);
     });
 
-    it('should throw if previous not completed', () => {
-        const stop = {
-            type: stopData.type,
-            shipmentStatus: stopData.shipmentStatus,
-            status: stopData.status,
-        };
+    it('should throw if previous not completed (pickup)', () => {
+        const stop = new StopMother({
+            type: StopType.PICKUP,
+            status: STOPSTATUS.ARRIVED
+        }).get();
 
-        expect(() => stopDomain.checkPickup(stop, false)).toThrow(ConflictException);
+        expect(() => stopDomain.checkPickup(stop, false))
+            .toThrow(ConflictException);
     });
-
 
     it('should throw if already delivered', () => {
-        const stop = {
-            type: stopData.type,
-            shipmentStatus: stopData.shipmentStatus,
-        };
+        const stop = new StopMother({
+            type: StopType.DELIVERY,
+            status: STOPSTATUS.DEPARTED
+        }).get();
 
         expect(() => stopDomain.checkDelivery(stop, true))
             .toThrow(ConflictException);
     });
 
-    it('should throw if not arrived', () => {
-        const stop = {
-            type: stopData.type,
-            shipmentStatus: stopData.shipmentStatus,
-            status: stopData.status,
-        };
+    it('should throw if not arrived (delivery)', () => {
+        const stop = new StopMother({
+            type: StopType.DELIVERY,
+            status: STOPSTATUS.TRANSIT
+        }).get();
 
-        expect(() => stopDomain.checkDelivery(stop, true)).toThrow(ConflictException);
+        expect(() => stopDomain.checkDelivery(stop, true))
+            .toThrow(ConflictException);
     });
 
-    it('should throw if previous not completed', () => {
-        const stop = {
-            type: stopData.type,
-            shipmentStatus: stopData.shipmentStatus,
-            status: stopData.status,
-        };
+    it('should throw if previous not completed (delivery)', () => {
+        const stop = new StopMother({
+            type: StopType.DELIVERY,
+            status: STOPSTATUS.ARRIVED
+        }).get();
 
-        expect(() => stopDomain.checkDelivery(stop, false)).toThrow(ConflictException);
+        expect(() => stopDomain.checkDelivery(stop, false))
+            .toThrow(ConflictException);
     });
 
 });
