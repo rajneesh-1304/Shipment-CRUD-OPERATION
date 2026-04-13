@@ -1,7 +1,6 @@
-import { EntityManager, MikroORM } from '@mikro-orm/postgresql';
+import { MikroORM } from '@mikro-orm/postgresql';
 import {
     BadRequestException,
-    ConflictException,
     Injectable,
     NotFoundException,
 } from '@nestjs/common';
