@@ -38,7 +38,7 @@ export class ShipmentDomain {
     const stops = this.stops;
 
     for (const stop of this.stops) {
-      if (stop.shipmentStatus !== Status.Completed) {
+      if (stop.status !== STOPSTATUS.DEPARTED &&  stop.shipmentStatus !== Status.Completed) {
         throw new ConflictException("Stops pending");
       }
     }

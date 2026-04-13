@@ -1,19 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { CompleteShipmentService } from './completeShipment.service';
-import { CompleteShipmentController } from './completeShipment.controller';
-import { ShipmentMother } from '../../../domain/objectMother/shipment/shipmentMother';
+import { CompleteShipmentService } from 'src/feature/shipment/completeShipment/completeShipment.service';
+import { CompleteShipmentController } from 'src/feature/shipment/completeShipment/completeShipment.controller';
+import { ShipmentMother } from 'src/domain/objectMother/shipment/shipmentMother';
 import { faker } from '@faker-js/faker';
-import { UserMother } from '../../../domain/objectMother/tenant/createTenant';
-import { StopMother } from '../../../domain/objectMother/stop/stop.mother';
+import { UserMother } from 'src/domain/objectMother/tenant/createTenant';
+import { StopMother } from 'src/domain/objectMother/stop/stop.mother';
 
 describe('CompleteShipmentController', () => {
     let controller: CompleteShipmentController;
-    const tenant = new UserMother();
-    const tenantName = tenant.get().name;
-    const request = {
-        tenant: tenantName
-    } as unknown as Request;
+    let tenantName: string;
+    let request: any;
 
     const mockService = {
         completeShipment: jest.fn(),
@@ -21,6 +18,9 @@ describe('CompleteShipmentController', () => {
 
     beforeEach(async () => {
         jest.clearAllMocks();
+        const tenant = new UserMother().get();
+        tenantName = tenant.name;
+        request = { tenant: tenantName };
 
         const module: TestingModule = await Test.createTestingModule({
             controllers: [CompleteShipmentController],
@@ -32,7 +32,7 @@ describe('CompleteShipmentController', () => {
             ],
         }).compile();
 
-        controller = module.get(CompleteShipmentController);
+        controller = module.get<CompleteShipmentController>(CompleteShipmentController);
     });
 
     it('should throw error if id is missing', async () => {
@@ -40,9 +40,7 @@ describe('CompleteShipmentController', () => {
             new BadRequestException('ShipmentId is required')
         );
 
-        await expect(controller.CompleteShipment('', request)).rejects.toThrow(
-            BadRequestException
-        );
+        await expect(controller.completeShipment('', request) ).rejects.toThrow(BadRequestException);
         expect(mockService.completeShipment).toHaveBeenCalledWith(
             '',
             tenantName,
@@ -51,13 +49,12 @@ describe('CompleteShipmentController', () => {
 
     it('should throw error if shipment not found', async () => {
         const shipmentId = faker.string.uuid();
+
         mockService.completeShipment.mockRejectedValue(
             new NotFoundException('Shipment not found')
         );
 
-        await expect(controller.CompleteShipment(shipmentId, request)).rejects.toThrow(
-            NotFoundException
-        );
+        await expect(controller.completeShipment(shipmentId, request)).rejects.toThrow(NotFoundException);
         expect(mockService.completeShipment).toHaveBeenCalledWith(
             shipmentId,
             tenantName,
@@ -69,9 +66,9 @@ describe('CompleteShipmentController', () => {
         const response = { message: "Shipment completed successfully" };
         mockService.completeShipment.mockResolvedValue(response);
 
-        const result = await controller.CompleteShipment(shipmentData.id, request);
+        const result = await controller.completeShipment( shipmentData.id, request );
 
         expect(result).toEqual(response);
-        expect(mockService.completeShipment).toHaveBeenCalledWith(shipmentData.id, tenantName);
+        expect(mockService.completeShipment).toHaveBeenCalledWith(shipmentData.id,tenantName);
     });
 });

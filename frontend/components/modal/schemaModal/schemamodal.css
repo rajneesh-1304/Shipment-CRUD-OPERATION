@@ -1,58 +1,38 @@
-.modal_overlay {
+.main_modal {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.5);
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
 }
 
 .modal {
-    background: white;
-    padding: 2rem;
-    border-radius: 10px;
-    width: 400px;
-    max-width: 90%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
+    background-color: white;
+    padding: 15px;
+    width: 300px;
+    border: 1px solid #ccc; 
 }
 
-.modal_form input,
-.modal_form textarea {
+.modal_form input {
     width: 100%;
-    margin-bottom: 1rem;
-    padding: 0.5rem;
+    margin-bottom: 10px;
+    padding: 5px;
 }
 
 .modal_actions {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
+    margin-top: 10px;
+    text-align: center; 
 }
 
-.submit_btn {
-    background: #4CAF50;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
+.modal_actions button {
+    margin-left: 10px;
 }
 
-.cancel_btn {
-    background: #f44336;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-}
-
-.error-text{
-    color:rgb(236, 74, 74);
+.error-text {
+    color: red;
+    font-size: 12px;
 }

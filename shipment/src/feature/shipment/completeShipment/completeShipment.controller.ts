@@ -3,14 +3,14 @@ import { CompleteShipmentService } from './completeShipment.service';
 
 @Controller('shipments')
 export class CompleteShipmentController {
-  constructor(private readonly completeShipment: CompleteShipmentService) { }
+  constructor(private readonly completeShipmentService: CompleteShipmentService) { }
  
   @Patch(':shipmentId/complete')
-  CompleteShipment(
+  completeShipment(
     @Param('shipmentId') shipmentId: string,
     @Req() req: any
   ) {
     const schema = req.tenant;
-    return this.completeShipment.completeShipment(shipmentId, schema);
+    return this.completeShipmentService.completeShipment(shipmentId, schema);
   }
 }

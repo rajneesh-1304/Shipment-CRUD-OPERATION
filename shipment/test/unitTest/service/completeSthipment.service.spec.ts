@@ -1,10 +1,10 @@
-import { CompleteShipmentService } from './completeShipment.service';
-import { STATUS } from '../../../domain/entity/shipment.entity';
-import { Status } from '../../../domain/entity/stop.entity';
-import { ShipmentMother } from '../../../domain/objectMother/shipment/shipmentMother';
-import { StopMother } from '../../../domain/objectMother/stop/stop.mother';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { faker } from '@faker-js/faker';
+import { CompleteShipmentService } from 'src/feature/shipment/completeShipment/completeShipment.service';
+import { StopMother } from 'src/domain/objectMother/stop/stop.mother';
+import { Status } from 'src/domain/entity/stop.entity';
+import { ShipmentMother } from 'src/domain/objectMother/shipment/shipmentMother';
+import { STATUS } from 'src/domain/entity/shipment.entity';
 
 describe('CompleteShipmentService', () => {
   let service: CompleteShipmentService;

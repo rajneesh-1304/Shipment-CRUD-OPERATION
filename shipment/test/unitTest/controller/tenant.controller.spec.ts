@@ -1,46 +1,44 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CreateTenantController } from './tenant.controller';
-import { TenantService } from './tenant.service';
+import { CreateTenantController } from 'src/feature/tenant/tenant.controller';
+import { TenantService } from 'src/feature/tenant/tenant.service';
 import { BadRequestException } from '@nestjs/common';
-import { UserMother } from '../../domain/objectMother/tenant/createTenant';
+import { UserMother } from 'src/domain/objectMother/tenant/createTenant';
 
 describe('CreateTenantController', () => {
     let controller: CreateTenantController;
-    let service: TenantService;
+
     const mockService = {
         createTenant: jest.fn(),
     };
     beforeEach(async () => {
+        jest.clearAllMocks();
         const module: TestingModule = await Test.createTestingModule({
             controllers: [CreateTenantController],
-            providers: [{
-                provide: TenantService,
-                useValue: mockService,
-            }]
+            providers: [
+                {
+                    provide: TenantService,
+                    useValue: mockService,
+                },
+            ],
         }).compile();
 
         controller = module.get<CreateTenantController>(CreateTenantController);
-        service = module.get<TenantService>(TenantService);
-    })
+    });
 
     it('should save tenant', async () => {
-        const obj = new UserMother();
-        const data = obj.get();
-        mockService.createTenant.mockResolvedValue(data.name)
+        const data = new UserMother().get();
+        mockService.createTenant.mockResolvedValue(data.name);
         const result = await controller.createTenant(data.name);
         expect(result).toEqual(data.name);
-        expect(service.createTenant).toHaveBeenCalledWith(data.name);
+        expect(mockService.createTenant).toHaveBeenCalledWith(data.name);
     });
 
     it('should throw error if tenant already exists', async () => {
-        const obj = new UserMother();
-        const data = obj.get();
+        const data = new UserMother().get();
         mockService.createTenant.mockRejectedValue(
             new BadRequestException('Tenant already exists')
         );
-        await expect(controller.createTenant(data.name)).rejects.toThrow(
-            BadRequestException 
-        );
-        expect(service.createTenant).toHaveBeenCalledWith(data.name);
+        await expect(controller.createTenant(data.name)).rejects.toThrow(BadRequestException);
+        expect(mockService.createTenant).toHaveBeenCalledWith(data.name);
     });
 });

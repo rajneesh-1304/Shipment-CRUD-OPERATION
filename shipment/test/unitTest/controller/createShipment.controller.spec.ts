@@ -1,19 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { CreateShipmentController } from './createShipment.controller';
-import { CreateShipmentService } from './createShipment.service';
-import { ShipmentMother } from '../../../domain/objectMother/shipment/shipmentMother';
-import { UserMother } from '../../../domain/objectMother/tenant/createTenant';
-import { StopMother } from '../../../domain/objectMother/stop/stop.mother';
+import { BadRequestException } from '@nestjs/common';
+import { CreateShipmentController } from 'src/feature/shipment/createShipment/createShipment.controller';
+import { CreateShipmentService } from 'src/feature/shipment/createShipment/createShipment.service';
+import { ShipmentMother } from 'src/domain/objectMother/shipment/shipmentMother';
+import { UserMother } from 'src/domain/objectMother/tenant/createTenant';
+import { StopMother } from 'src/domain/objectMother/stop/stop.mother';
 
 describe('CreateShipment', () => {
     let controller: CreateShipmentController;
-
-    const tenant = new UserMother();
-    const tenantName = tenant.get().name;
-    const request = {
-        tenant: tenantName
-    } as unknown as Request;
+    let tenantName: string;
+    let request: any;
 
     const mockService = {
         createShipment: jest.fn(),
@@ -21,6 +17,10 @@ describe('CreateShipment', () => {
 
     beforeEach(async () => {
         jest.clearAllMocks();
+        const tenant = new UserMother().get();
+        tenantName = tenant.name;
+        request = { tenant: tenantName };
+
         const module: TestingModule = await Test.createTestingModule({
             controllers: [CreateShipmentController],
             providers: [
@@ -38,9 +38,7 @@ describe('CreateShipment', () => {
         mockService.createShipment.mockRejectedValue(
             new BadRequestException('Invalid data')
         );
-        await expect(controller.createShipment(shipmentData, request)).rejects.toThrow(
-            BadRequestException
-        )
+        await expect(controller.createShipment(shipmentData, request)).rejects.toThrow(BadRequestException);
         expect(mockService.createShipment).toHaveBeenCalledWith(
             shipmentData,
             tenantName,
@@ -52,6 +50,6 @@ describe('CreateShipment', () => {
         mockService.createShipment.mockResolvedValue(data);
         const result = await controller.createShipment(data, request);
         expect(result).toEqual(data);
-        expect(mockService.createShipment).toHaveBeenCalledWith(data, tenantName);
+        expect(mockService.createShipment).toHaveBeenCalledWith(data,tenantName);
     });
 });

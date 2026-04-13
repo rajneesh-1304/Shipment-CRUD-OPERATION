@@ -1,10 +1,10 @@
-import { DeliveryService } from './delivery.service';
-import { ShipmentMother } from '../../../domain/objectMother/shipment/shipmentMother';
-import { StopMother } from '../../../domain/objectMother/stop/stop.mother';
-import { Status, STOPSTATUS, StopType } from '../../../domain/entity/stop.entity';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { faker } from '@faker-js/faker';
-import { StopTransformer } from '../../../domain/transformer/stop.transformer';
+import { DeliveryService } from 'src/feature/stops/delivery/delivery.service';
+import { StopMother } from 'src/domain/objectMother/stop/stop.mother';
+import { Status, STOPSTATUS, StopType } from 'src/domain/entity/stop.entity';
+import { ShipmentMother } from 'src/domain/objectMother/shipment/shipmentMother';
+import { StopTransformer } from 'src/domain/transformer/stop.transformer';
 
 describe('DeliveryService', () => {
   let service: DeliveryService;
@@ -43,9 +43,8 @@ describe('DeliveryService', () => {
       type: StopType.DELIVERY,
     }).get();
 
-    const shipment = new ShipmentMother({
-      stops: [prevStop, currentStop],
-    }).create();
+    const shipment = new ShipmentMother().create();
+    shipment.stops = [prevStop, currentStop];
 
     prevStop.shipment = shipment;
     currentStop.shipment = shipment;
@@ -76,6 +75,6 @@ describe('DeliveryService', () => {
   it('should throw error if shipment not found', async () => {
     mockEm.findOne.mockResolvedValue(null);
 
-    await expect(service.delivery( faker.string.uuid(), faker.string.uuid(), faker.company.name())).rejects.toThrow(NotFoundException);
+    await expect(service.delivery(faker.string.uuid(), faker.string.uuid(), faker.company.name())).rejects.toThrow(NotFoundException);
   });
 });

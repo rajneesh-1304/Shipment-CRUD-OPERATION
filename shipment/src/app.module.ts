@@ -1,4 +1,4 @@
-import { Module, Controller, Get, UseGuards, NestModule, MiddlewareConsumer } from '@nestjs/common';
+import { Module, Controller, Get, UseGuards, NestModule, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
@@ -34,7 +34,10 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(TenantMiddleware)
-      .exclude('tenants')
+      .exclude(
+        { path: 'tenants', method: RequestMethod.GET },
+        { path: 'tenants', method: RequestMethod.POST }
+      )
       .forRoutes('*'); 
   }
 }

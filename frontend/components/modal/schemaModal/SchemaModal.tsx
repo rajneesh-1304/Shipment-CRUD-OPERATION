@@ -48,12 +48,12 @@ export default function SchemaModal({ close }: SchemaModalProps) {
     };
 
     return (
-        <div className="modal_overlay">
+        <div className="main_modal">
             <div className="modal">
-                <h2 style={{ fontWeight: '900', fontSize: '2vh' }}>Add Schema</h2>
+                <h2 style={{ fontSize: '2vh', textAlign: 'center' }}>Add Schema</h2>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="modal_form">
-                    <Box sx={{ display: "flex", flexDirection: "column", width: 350, gap: 3 }}>
+                    <Box sx={{ display: "flex", flexDirection: "column", width: 270, gap: 3 }}>
                         <FormControl>
                             <TextField
                                 label="Task Name"

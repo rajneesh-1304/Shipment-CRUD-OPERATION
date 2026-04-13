@@ -13,15 +13,18 @@ import {
 import storage from "redux-persist/lib/storage";
 import { injectStore } from "@/components/privateApi";
 import schemaReducer from './features/schema/schemaSlice';
+import shipmentReducer from './features/shipment/shipmentSlice';
 
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["users"], 
+  whitelist: ["schema", "shipment"], 
 };
 
 const rootReducer = combineReducers({
   schema: schemaReducer,
+  shipment: shipmentReducer,
+
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

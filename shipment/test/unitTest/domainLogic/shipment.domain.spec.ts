@@ -1,50 +1,62 @@
-import { ShipmentDomain } from './shipment.domain';
+import { ShipmentMother } from '../../../src/domain/objectMother/shipment/shipmentMother';
 import { BadRequestException, ConflictException } from '@nestjs/common';
-import { STATUS } from '../entity/shipment.entity';
-import { Status } from '../entity/stop.entity';
-import { ShipmentMother } from '../objectMother/shipment/shipmentMother';
-import { StopMother } from '../objectMother/stop/stop.mother';
+import { StopMother } from '../../../src/domain/objectMother/stop/stop.mother';
+import { ShipmentDomain } from '../../../src/domain/domainlogic/shipment.domain';
+import { STATUS } from '../../../src/domain/entity/shipment.entity';
+import { STOPSTATUS, Status } from '../../../src/domain/entity/stop.entity';
 
 describe('ShipmentDomain', () => {
-    const shipmentDomain = new ShipmentDomain();
-    const shipmentData = new ShipmentMother().withStopDetails(new StopMother()).create();
-    it('should throw error if title is missing', () => {
-         const data = {
-            stops: shipmentData.stops
-        };
 
-        expect(() => shipmentDomain.checkCreate(data)).toThrow(BadRequestException);
+    let shipmentDomain: ShipmentDomain;
+
+    beforeEach(() => {
+        shipmentDomain = new ShipmentDomain();
+    });
+
+    it('should throw error if title is missing', () => {
+        const shipmentData = new ShipmentMother().withStopDetails(new StopMother()).create();
+        shipmentDomain.stops = shipmentData.stops;
+
+        expect(() => shipmentDomain.checkCreate()).toThrow(BadRequestException);
     });
 
     it('should throw error if stops are missing', () => {
-        const data = {
-            title: shipmentData.title,
-            stops: []
-        };
+        const shipmentData = new ShipmentMother().create();
 
-        expect(() => shipmentDomain.checkCreate(data)).toThrow(BadRequestException);
+        shipmentDomain.title = shipmentData.title;
+        shipmentDomain.stops = [];
+
+        expect(() => shipmentDomain.checkCreate())
+            .toThrow(BadRequestException);
     });
 
     it('should throw error for duplicate sequence numbers', () => {
-        const data = {
-            title: shipmentData.title,
-            stops: [
-                { sequenceNumber: shipmentData.stops[0]?.sequenceNumber },
-                { sequenceNumber: shipmentData.stops[0]?.sequenceNumber },
-            ]
-        };
+        const stop = new StopMother().get();
 
-        expect(() => shipmentDomain.checkCreate(data)).toThrow(BadRequestException);
+        shipmentDomain.title = 'Test Shipment';
+        shipmentDomain.stops = [
+            { ...stop, sequenceNumber: 1 },
+            { ...stop, sequenceNumber: 1 },
+        ];
+
+        expect(() => shipmentDomain.checkCreate())
+            .toThrow(BadRequestException);
     });
 
     it('should throw error if shipment already completed', () => {
-        const stops = [
-            { shipmentStatus: shipmentData.status },
-        ];
+        const shipmentData = new ShipmentMother()
+            .withStopDetails(new StopMother())
+            .create();
 
-        expect(() =>
-            shipmentDomain.checkCompleteShipment(stops, shipmentData.status)).toThrow(ConflictException);
+        shipmentDomain.status = STATUS.COMPLETED;
+        shipmentDomain.stops = shipmentData.stops.map(stop => ({
+            ...stop,
+            status: STOPSTATUS.DEPARTED,
+            shipmentStatus: Status.Completed
+        }));
+
+        expect(() => shipmentDomain.checkCompleteShipment())
+            .toThrow(ConflictException);
     });
-
 
 });

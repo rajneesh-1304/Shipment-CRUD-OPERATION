@@ -20,7 +20,7 @@ export class PickupService {
             throw new NotFoundException("Shipment not found");
         }
         const stop = shipment.stops.find(s => s.id === stopId);
-        // if (!stop) throw new NotFoundException("Stop not found");
+        if (!stop) throw new NotFoundException("Stop not found");
         // const stops = await em.find(
         //     Stop,
         //     { shipment: { id: shipmentId } }, 

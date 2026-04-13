@@ -5,7 +5,6 @@ import {
     NotFoundException,
 } from '@nestjs/common';
 import { Shipment, STATUS } from '../../../domain/entity/shipment.entity';
-import { Stop } from '../../../domain/entity/stop.entity';
 
 @Injectable()
 export class CompleteShipmentService {
@@ -21,7 +20,6 @@ export class CompleteShipmentService {
         if (!shipment) { throw new NotFoundException("Shipment not found"); }
 
         shipment.checkCompleteShipment();
-        shipment.status = STATUS.COMPLETED;
 
         await em.flush();
 

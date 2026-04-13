@@ -1,9 +1,9 @@
-import { CreateShipmentService } from './createShipment.service';
-import { Shipment } from '../../../domain/entity/shipment.entity';
-import { Stop, StopType } from '../../../domain/entity/stop.entity';
-import { ShipmentMother } from '../../../domain/objectMother/shipment/shipmentMother';
 import { faker } from '@faker-js/faker';
-import { StopMother } from '../../../domain/objectMother/stop/stop.mother';
+import { Shipment } from 'src/domain/entity/shipment.entity';
+import { Stop, StopType } from 'src/domain/entity/stop.entity';
+import { ShipmentMother } from 'src/domain/objectMother/shipment/shipmentMother';
+import { StopMother } from 'src/domain/objectMother/stop/stop.mother';
+import { CreateShipmentService } from 'src/feature/shipment/createShipment/createShipment.service';
 
 describe('CreateShipmentService', () => {
   let service: CreateShipmentService;
@@ -45,6 +45,7 @@ describe('CreateShipmentService', () => {
     const createdShipment = {
       id: shipmentData.id,
       title: shipmentData.title,
+      checkCreate: jest.fn(),
     };
 
     mockEm.create.mockReturnValueOnce(createdShipment);

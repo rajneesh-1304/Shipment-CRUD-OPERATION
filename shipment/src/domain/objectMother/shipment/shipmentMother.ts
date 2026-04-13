@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { StopMother } from '../stop/stop.mother';
 import { Shipment, STATUS } from '../../../domain/entity/shipment.entity';
-import { ShipmentDomain } from 'src/domain/domainlogic/shipment.domain';
+import { ShipmentDomain } from '../../../domain/domainlogic/shipment.domain';
 
 export class ShipmentMother {
   private stops: StopMother;

@@ -81,10 +81,13 @@
     "transformIgnorePatterns": [
       "/node_modules/(?!(axios|intl-messageformat|@faker-js/faker)/)"
     ],
-    "rootDir": "src",
+    "rootDir": ".",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "moduleNameMapper": {
+      "^src/(.*)$": "<rootDir>/src/$1"
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s"

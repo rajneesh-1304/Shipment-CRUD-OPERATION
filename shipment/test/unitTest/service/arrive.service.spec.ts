@@ -1,10 +1,10 @@
-import { ArriveService } from './arrive.service';
-import { ShipmentMother } from '../../../domain/objectMother/shipment/shipmentMother';
-import { StopMother } from '../../../domain/objectMother/stop/stop.mother';
-import { Status, STOPSTATUS, StopType } from '../../../domain/entity/stop.entity';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { faker } from '@faker-js/faker';
-import { StopTransformer } from '../../../domain/transformer/stop.transformer';
+import { ArriveService } from 'src/feature/stops/arrive/arrive.service';
+import { StopMother } from 'src/domain/objectMother/stop/stop.mother';
+import { Status, STOPSTATUS, StopType } from 'src/domain/entity/stop.entity';
+import { ShipmentMother } from 'src/domain/objectMother/shipment/shipmentMother';
+import { StopTransformer } from 'src/domain/transformer/stop.transformer';
 
 describe('ArriveService', () => {
   let service: ArriveService;
@@ -43,10 +43,8 @@ describe('ArriveService', () => {
       type: StopType.PICKUP,
     }).get();
 
-    const shipment = new ShipmentMother({
-      stops: [prevStop, currentStop],
-    }).create();
-
+    const shipment = new ShipmentMother().create();
+    shipment.stops = [prevStop, currentStop];
     prevStop.shipment = shipment;
     currentStop.shipment = shipment;
 

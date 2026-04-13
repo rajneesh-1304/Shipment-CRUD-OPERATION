@@ -1,6 +1,6 @@
-import { TenantService } from './tenant.service';
 import { BadRequestException } from '@nestjs/common';
-import { UserMother } from '../../domain/objectMother/tenant/createTenant';
+import { UserMother } from 'src/domain/objectMother/tenant/createTenant';
+import { TenantService } from 'src/feature/tenant/tenant.service';
 
 describe('TenantService', () => {
   let service: TenantService;

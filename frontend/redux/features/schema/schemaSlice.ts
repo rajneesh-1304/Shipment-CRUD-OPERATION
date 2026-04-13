@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { createSchema } from "./service";
+import { createSchema, getSchema } from "./service";
 
 interface Schema {
   id: string;
@@ -33,9 +33,20 @@ export const createSchemaThunk = createAsyncThunk(
 );
 
 
+export const getSchemaThunk = createAsyncThunk(
+  "schema/get",
+  async (_, { rejectWithValue }) => {
+    try {
+      return await getSchema();
+    } catch (err: any) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
 
 const schemaSlice = createSlice({
-  name: "auth",
+  name: "schema",
   initialState,
   reducers: {
     clearSchemas: (state: any) => {
@@ -43,6 +54,10 @@ const schemaSlice = createSlice({
       state.error = null;
       state.loading = false;
     },
+    setCurrentSchema: (state, action) => {
+      console.log('action payf0', action.payload);
+    state.currentSchema = action.payload;
+  },
   },
   extraReducers: (builder) => {
     builder
@@ -54,13 +69,26 @@ const schemaSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(createSchemaThunk.rejected, (state, action) => {
+      .addCase(createSchemaThunk.rejected, (state, action: any) => {
+        state.error = action.payload.error;
+        state.loading = false;
+      })
+      .addCase(getSchemaThunk.fulfilled, (state, action) => {
+        state.schemas = action.payload;
+        state.loading = false;
+      })
+      .addCase(getSchemaThunk.pending, (state, action) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getSchemaThunk.rejected, (state, action: any) => {
         state.error = action.payload.error;
         state.loading = false;
       })
 
+
   },
 });
 
-export const { clearSchemas } = schemaSlice.actions;
+export const { clearSchemas, setCurrentSchema } = schemaSlice.actions;
 export default schemaSlice.reducer;

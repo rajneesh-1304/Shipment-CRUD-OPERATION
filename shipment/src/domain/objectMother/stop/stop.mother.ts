@@ -1,4 +1,4 @@
-import { StopDomain } from "src/domain/domainlogic/stop.domain";
+import { StopDomain } from "../../../domain/domainlogic/stop.domain";
 import { Status, Stop, STOPSTATUS, StopType } from "../../../domain/entity/stop.entity";
 import { faker } from '@faker-js/faker';
 
