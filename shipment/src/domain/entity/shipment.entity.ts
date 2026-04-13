@@ -7,51 +7,51 @@ export enum STATUS {
   COMPLETED = "COMPLETED",
 }
 
-@Entity({ tableName: 'shipment', schema: '*' }) 
-export class Shipment {
+// @Entity({ tableName: 'shipment', schema: '*' }) 
+// export class Shipment {
 
-  @PrimaryKey({ type: 'uuid' })
-  id: string = v4();
+//   @PrimaryKey({ type: 'uuid' })
+//   id: string = v4();
 
-  @Property()
-  title!: string;
+//   @Property()
+//   title!: string;
 
-  @Enum(() => STATUS)
-  status: STATUS = STATUS.PENDING;
+//   @Enum(() => STATUS)
+//   status: STATUS = STATUS.PENDING;
 
-  @Property({ onCreate: () => new Date() })
-  createdAt: Date = new Date();
+//   @Property({ onCreate: () => new Date() })
+//   createdAt: Date = new Date();
 
-  @Property({
-    onCreate: () => new Date(),
-    onUpdate: () => new Date(),
-  })
-  updatedAt: Date = new Date();
+//   @Property({
+//     onCreate: () => new Date(),
+//     onUpdate: () => new Date(),
+//   })
+//   updatedAt: Date = new Date();
 
-  @OneToMany(() => Stop, stop => stop.shipment)
-  stops: Stop[] = [];
-}
+//   @OneToMany(() => Stop, stop => stop.shipment)
+//   stops: Stop[] = [];
+// }
 
-// import { defineEntity, InferEntity, p } from '@mikro-orm/core';
-// import { Stop } from './stop.entity';
-// import { v4 } from 'uuid';
-// import { Tenant } from './tenant.entity';
+import { defineEntity, InferEntity, p } from '@mikro-orm/core';
+import { ShipmentDomain } from '../domainlogic/shipment.domain';
 
-// export const Shipment = defineEntity({
-//   name: 'Shipment',
-//   schema: '*',
-//   properties: {
-//     id: p.uuid().primary().onCreate(() => v4()),
-//     title: p.string(),
-//     status: () => p.enum(()=> STATUS).default(STATUS.PENDING),
-//     createdAt: p.datetime().onCreate(() => new Date()),
-//     updatedAt: p.datetime()
-//       .onCreate(() => new Date())
-//       .onUpdate(() => new Date()),
-//     stops: () => p.oneToMany(Stop).mappedBy('shipment'),
-//   },
-// });
+export const Shipment = defineEntity({
+  name: 'Shipment',
+  schema: '*',
+  tableName: 'shipment',
+  class: ShipmentDomain,
+  properties: {
+    id: p.uuid().primary().onCreate(() => v4()),
+    title: p.string(),
+    status: () => p.enum(()=> STATUS).default(STATUS.PENDING),
+    createdAt: p.datetime().onCreate(() => new Date()),
+    updatedAt: p.datetime()
+      .onCreate(() => new Date())
+      .onUpdate(() => new Date()),
+    stops: () => p.oneToMany(Stop).mappedBy('shipment'),
+  },
+});
 
-// export type IShipment = InferEntity<typeof Shipment>;
+export type IShipment = InferEntity<typeof Shipment>;
 
 

@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { StopMother } from '../stop/stop.mother';
 import { Shipment, STATUS } from '../../../domain/entity/shipment.entity';
+import { ShipmentDomain } from 'src/domain/domainlogic/shipment.domain';
 
 export class ShipmentMother {
   private stops: StopMother;
@@ -20,10 +21,9 @@ export class ShipmentMother {
   }
 
   public create() {
-    const shipment = new Shipment();
+    const shipment = new ShipmentDomain();
     shipment.id = this.params.id || faker.string.uuid();
     shipment.title = this.params.title || faker.company.name();
-    shipment.stops = this.params.stops || [];
     shipment.status = this.params.status || STATUS.PENDING;
 
     if (this.stops) {

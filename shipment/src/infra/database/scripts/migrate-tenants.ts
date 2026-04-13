@@ -6,6 +6,7 @@ export class CreateSchema {
     constructor(private readonly orm: MikroORM) {}
     
     async createSchema(schema) {
+        console.log(schema, 'hello i am schema ')
         this.orm.config.set('schema', schema);
         await this.orm.em.getContext().getConnection().execute(
             `set search_path to "${schema}"`
@@ -15,5 +16,6 @@ export class CreateSchema {
         await this.orm.em.getContext().getConnection().execute(
             `set search_path to "public"`
         );
+        console.log('i got hit ')
     }
 }

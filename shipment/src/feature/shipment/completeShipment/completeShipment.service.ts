@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { Shipment, STATUS } from '../../../domain/entity/shipment.entity';
 import { Stop } from '../../../domain/entity/stop.entity';
-import { ShipmentDomain } from '../../../domain/logic/shipment.domain';
 
 @Injectable()
 export class CompleteShipmentService {
@@ -14,18 +13,14 @@ export class CompleteShipmentService {
 
     async completeShipment(id: string, schema: string) {
         const em = this.orm.em.getContext();
-        if(!id){
+        if (!id) {
             throw new BadRequestException('ShipmentId is required')
         }
 
-        const shipment = await em.findOne(Shipment, { id}, {schema : schema});
-        if (!shipment) 
-            {throw new NotFoundException("Shipment not found");}
+        const shipment = await em.findOne(Shipment, { id }, { schema: schema, populate: ['stops'], });
+        if (!shipment) { throw new NotFoundException("Shipment not found"); }
 
-        const stops = await em.find(Stop, { shipment: { id}}, {schema: schema});
-        const shipmentDomain = new ShipmentDomain();
-        shipmentDomain.checkCompleteShipment(stops, shipment.status);
-
+        shipment.checkCompleteShipment();
         shipment.status = STATUS.COMPLETED;
 
         await em.flush();

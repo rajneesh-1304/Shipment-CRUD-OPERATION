@@ -2,8 +2,8 @@ import { EntityManager, MikroORM } from '@mikro-orm/postgresql';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Shipment } from '../../../domain/entity/shipment.entity';
 import { Status, Stop, STOPSTATUS } from '../../../domain/entity/stop.entity';
-import { StopDomain } from '../../../domain/logic/stop.domain';
 import { StopTransformer } from '../../../domain/transformer/stop.transformer';
+import { StopDomain } from '../../../domain/domainlogic/stop.domain';
 
 @Injectable()
 export class DeliveryService {
@@ -16,25 +16,30 @@ export class DeliveryService {
         }
         const em = this.orm.em.getContext();
 
-        const shipment = await em.findOne(Shipment, { id: shipmentId }, {schema: schema});
+        const shipment = await em.findOne(Shipment, { id: shipmentId }, {schema: schema, populate: ['stops']});
         if (!shipment) {
             throw new NotFoundException("Shipment not found");
         }
 
-        const stops = await em.find(
-            Stop,
-            { shipment: { id: shipmentId } },
-            { populate: ['shipment'], orderBy: { sequenceNumber: 'ASC' }, schema: schema }
-        );
-        const stopDomain = new StopDomain();
-        const result = stopDomain.getStop(stops, stopId);
-        const stop = result.stop;
-        const idx = result.idx;
-        const previousCompleted = stopDomain.isPreviousCompleted(stops, idx);
-        stopDomain.checkDelivery(stop, previousCompleted);
+        // const stops = await em.find(
+        //     Stop,
+        //     { shipment: { id: shipmentId } },
+        //     { populate: ['shipment'], orderBy: { sequenceNumber: 'ASC' }, schema: schema }
+        // );
 
-        stop.shipmentStatus = Status.Completed;
-        stop.status = STOPSTATUS.DEPARTED;
+        // // shipment.checkPrevious();
+        // const stopDomain = new StopDomain();
+        // stopDomain.checkDelivery();
+        const stop = shipment.stops.find(s => s.id === stopId);
+        if (!stop) throw new NotFoundException("Stop not found");
+
+        if (!shipment.stops.length) {
+            throw new NotFoundException("Stops not found");
+        }
+
+        shipment.checkPrevious(stop.sequenceNumber);
+        stop.checkDelivery();
+
 
         await em.flush();
 

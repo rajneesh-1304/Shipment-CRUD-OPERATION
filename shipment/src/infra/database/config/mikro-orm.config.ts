@@ -18,8 +18,8 @@ const databaseConfig: Options = defineConfig({
     extensions: [Migrator],
     migrations: {
         tableName: "micro-orm-migrations",
-        path: "dist/infra/migrations",
-        pathTs: "src/infra/migrations",
+        path: "dist/infra/database/migrations",
+        pathTs: "src/infra/database/migrations",
         transactional: true,
         dropTables: false,
         fileName(timestamp, name) {

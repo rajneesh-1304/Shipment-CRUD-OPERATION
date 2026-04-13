@@ -1,5 +1,5 @@
 import { plainToInstance } from "class-transformer";
-import { ShipmentDto } from "../dto/shipment.serializer";
+import { ShipmentDto } from "./dto/shipment.serializer";
 
 export class ShipmentTransformer {
 

@@ -1,3 +1,4 @@
+import { StopDomain } from "src/domain/domainlogic/stop.domain";
 import { Status, Stop, STOPSTATUS, StopType } from "../../../domain/entity/stop.entity";
 import { faker } from '@faker-js/faker';
 
@@ -13,7 +14,7 @@ export class StopMother {
     ) {}
 
     public get() {
-        const stop = new Stop();
+        const stop = new StopDomain();
         stop.id = this.params.id || faker.string.uuid();
         stop.sequenceNumber = this.params.sequenceNumber || faker.number.int({ min:1, max:10});
         stop.type = this.params.type || (Math.random() < 0.5 ? StopType.PICKUP : StopType.DELIVERY);
@@ -21,6 +22,4 @@ export class StopMother {
         stop.shipmentStatus = this.params.shipmentStatus || Status.Pending;
         return stop
     }
-
-
 }
