@@ -3,6 +3,8 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     margin: 10px;
+    border-radius: 10px;
+    border-left: 5px solid rgb(89, 189, 167);
 }
 
 .shipment-btn{
@@ -10,6 +12,7 @@
     padding: 10px;
     border: 2px solid rgb(108, 179, 181);
     width: 130px;
+    border-radius: 10px;
 }
 
 .heading{

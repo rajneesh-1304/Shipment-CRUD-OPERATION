@@ -1,13 +1,13 @@
 'use client'
-import { getShipmentByIdThunk } from '@/redux/features/shipment/shipmentSlice';
+import { completeShipmentThunk, getShipmentByIdThunk } from '@/redux/features/shipment/shipmentSlice';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
-import { useParams, useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import './stop.css';
 import { arriveAtStopThunk, deliverAtStopThunk, pickupAtStopThunk } from '@/redux/features/stops/stopsSlice';
 import { Snackbar } from '@mui/material';
 
-const page = () => {
+const Page = () => {
     const params = useParams();
     const id = params.id;
     const dispatch = useAppDispatch();
@@ -16,68 +16,86 @@ const page = () => {
     const schema = useAppSelector(state => state.schema.currentSchema);
     const schemaId = schema?.id;
     const shipment = useAppSelector(state => state.shipment.currentShipment);
+    const stopError = useAppSelector(state => state.stop.error);
     useEffect(() => {
-        dispatch(getShipmentByIdThunk({ id, schemaId }));
-    }, [])
-
-    const handleArrive = async (stopId: string) => {
-        try {
-            await dispatch(arriveAtStopThunk({ shipmentId: shipment?.id, stopId, schemaId }));
+        if (id && schemaId) {
             dispatch(getShipmentByIdThunk({ id, schemaId }));
-            setSnackbarMessage("Arrived at location");
+        }
+    }, [dispatch, id, schemaId])
+
+    const handleAction = async (actionThunk: any, successMessage: string) => {
+        try {
+            await dispatch(actionThunk).unwrap();
+            dispatch(getShipmentByIdThunk({ id, schemaId }));
+            setSnackbarMessage(successMessage);
             setSnackbarOpen(true);
-            setTimeout(() => close(), 800);
-        } catch (error: any) {
-            setSnackbarMessage(error);
+        } catch (err: any) {
+            setSnackbarMessage(stopError || "An error occurred");
             setSnackbarOpen(true);
         }
     }
 
-    const handlePick = async (stopId: string) => {
-        try {
-           await dispatch(pickupAtStopThunk({ shipmentId: shipment?.id, stopId, schemaId }));
-           dispatch(getShipmentByIdThunk({ id, schemaId }));
-           setSnackbarMessage("Picked up from location");
-            setSnackbarOpen(true);
-            setTimeout(() => close(), 800);
-        } catch (error: any) {
-            setSnackbarMessage(error);
-            setSnackbarOpen(true);
-        }
+    const handleArrive = (stopId: string) => {
+        handleAction(
+            arriveAtStopThunk({ shipmentId: shipment?.id, stopId, schemaId }),
+            "Arrived at location"
+        );
     }
 
-    const handleDeliver = async (stopId: string) => {
-        try {
-            await dispatch(deliverAtStopThunk({ shipmentId: shipment?.id, stopId, schemaId }));
-            dispatch(getShipmentByIdThunk({ id, schemaId }));
-            setSnackbarMessage("Picked up from location");
-            setSnackbarOpen(true);
-            setTimeout(() => close(), 800);
-        } catch (error: any) {
-            setSnackbarMessage(error);
-            setSnackbarOpen(true);
-        }
+    const handlePick = (stopId: string) => {
+        handleAction(
+            pickupAtStopThunk({ shipmentId: shipment?.id, stopId, schemaId }),
+            "Picked up from location"
+        );
+    }
+
+    const handleDeliver = (stopId: string) => {
+        handleAction(
+            deliverAtStopThunk({ shipmentId: shipment?.id, stopId, schemaId }),
+            "Delivered at location"
+        );
+    }
+
+    const handleCompleteShipment = (id: string) => {
+        handleAction(
+            completeShipmentThunk({ id, schemaId }),
+            "Completed Shipment"
+        );
     }
 
     return (
         <div>
             <h1 className='heading'>Shipment {shipment?.title} details</h1>
-            <div className='status'>Shipment Status: {shipment?.status}</div>
+            <div className='shipment'>
+                <div>
+                    <div className='status'>Shipment Status: {shipment?.status}</div>
+                </div>
+                {shipment.status === 'PENDING' && <button className='btn' onClick={() => {
+                   handleCompleteShipment(shipment?.id)
+                }}>
+                    {shipment?.status === 'PENDING' ? 'PENDING' : 'COMPLETED'}
+                </button>}
+            </div>
             <div>
                 {shipment?.stops?.map((stop: any) => (
-                    <div className='card' key={stop.id}
-                    >
+                    <div className='card' key={stop.id} >
                         <div>
                             <div>Sequence Number: {stop?.sequenceNumber}</div>
                             <div>Stop Status: {stop?.status}</div>
                             <div>Stop Shipment Status: {stop?.shipmentStatus}</div>
                         </div>
-
                         <div className='buttons'>
-                            <button className='btn' onClick={() => handleArrive(stop?.id)}>{stop?.status === 'TRANSIT' ? 'Arrive at location' : (stop?.status === 'ARRIVED' && stop.shipmentStatus === 'Pending' ? 'Arrived from location' : 'Departed from location')}</button>
-                            {stop.shipmentStatus === 'Pending' && <button className='btn' onClick={() => {
-                                stop?.type === 'PICKUP' ? handlePick(stop?.id) : handleDeliver(stop?.id)
-                            }}>{stop?.type === 'PICKUP' ? 'Pickup at location' : 'Deliver at location'}</button>}
+                            <button className='btn' onClick={() => handleArrive(stop?.id)}>
+                                {stop?.status === 'TRANSIT'  ? 'Arrive at location' : ( stop?.status === 'ARRIVED' ? 'Arrived' : 'Departed') }
+                            </button>
+
+                            {stop.shipmentStatus === 'Pending' && (
+                                <button className='btn' onClick={() => {
+                                    stop?.type === 'PICKUP' ? handlePick(stop?.id) : handleDeliver(stop?.id)
+                                }}>
+                                    {stop?.type === 'PICKUP' ? 'Pickup' : 'Deliver'}
+                                </button>
+                            )}
                         </div>
                     </div>
                 ))}
@@ -92,4 +110,4 @@ const page = () => {
     )
 }
 
-export default page
+export default Page;

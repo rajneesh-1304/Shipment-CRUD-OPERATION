@@ -56,7 +56,7 @@ export default function SchemaModal({ close }: SchemaModalProps) {
                     <Box sx={{ display: "flex", flexDirection: "column", width: 270, gap: 3 }}>
                         <FormControl>
                             <TextField
-                                label="Task Name"
+                                label="Schema Name"
                                 size="small"
                                 {...register("title")}
                                 error={!!errors.title}

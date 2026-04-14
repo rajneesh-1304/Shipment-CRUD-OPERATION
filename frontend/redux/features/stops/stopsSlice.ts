@@ -17,7 +17,7 @@ export const arriveAtStopThunk = createAsyncThunk(
     try {
       return await arriveAtStop(shipmentId, stopId, schemaId);
     } catch (err: any) {
-      return rejectWithValue(err.message);
+      return rejectWithValue(err.response.data.title);
     }
   }
 );
@@ -28,7 +28,8 @@ export const pickupAtStopThunk = createAsyncThunk(
     try {
       return await pickupAtStop(shipmentId, stopId, schemaId);
     } catch (err: any) {
-      return rejectWithValue(err.message);
+      console.log(err, 'this is error ')
+      return rejectWithValue(err.response.data.title);
     }
   }
 );
@@ -39,7 +40,8 @@ export const deliverAtStopThunk = createAsyncThunk(
     try {
       return await deliverAtStop(shipmentId, stopId, schemaId);
     } catch (err: any) {
-      return rejectWithValue(err.message);
+      console.log(err, 'this is error ')
+      return rejectWithValue(err.response.data.title);
     }
   }
 );
@@ -59,8 +61,7 @@ const stopSlice = createSlice({
         state.error = null;
       })
       .addCase(arriveAtStopThunk.rejected, (state, action: any) => {
-        console.log(action.payload, 'this is the error .....')
-        state.error = action.payload.error;
+        state.error = action.payload;
         state.loading = false;
       })
 
@@ -72,7 +73,7 @@ const stopSlice = createSlice({
         state.error = null;
       })
       .addCase(pickupAtStopThunk.rejected, (state, action: any) => {
-        state.error = action.payload.error;
+        state.error = action.payload;
         state.loading = false;
       })
 
@@ -84,7 +85,7 @@ const stopSlice = createSlice({
         state.error = null;
       })
       .addCase(deliverAtStopThunk.rejected, (state, action: any) => {
-        state.error = action.payload.error;
+        state.error = action.payload;
         state.loading = false;
       })
 

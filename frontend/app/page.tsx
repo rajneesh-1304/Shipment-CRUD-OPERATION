@@ -1,10 +1,10 @@
 'use client'
 import SchemaModal from '@/components/modal/schemaModal/SchemaModal';
 import { getSchemaThunk, setCurrentSchema } from '@/redux/features/schema/schemaSlice';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import './schema.css'
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 
 
 const page = () => {
@@ -17,9 +17,10 @@ const page = () => {
   }, [])
   return (
     <div className='container'>
+      <h1 className= 'head'>Schemas of Application</h1>
       <div className='header'>
         <div className='btn' onClick={() => setIsOpen(true)}>Add Schema</div>
-        <div className='list'>
+        <div className='list-all'>
           {schemas?.map((schema: any) => (
             <div className='card' key={schema.id}
               onClick={() => {

@@ -1,7 +1,7 @@
 import { Get, Module } from '@nestjs/common';
 import { CreateTenantController } from './tenant.controller';
 import { TenantService } from './tenant.service';
-import { CreateSchema } from 'src/infra/database/scripts/migrate-tenants';
+import { CreateSchema } from 'src/infrastructure/database/scripts/migrate-tenants';
 import { GetTenantService } from './getTenant/getTenant.service';
 import { GetTenantController } from './getTenant/getTenant.controller';
 @Module({

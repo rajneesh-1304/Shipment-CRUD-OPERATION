@@ -7,9 +7,9 @@ import { APP_FILTER } from '@nestjs/core';
 import { HttpExceptionFilter } from './domain/exception.filter';
 import { StopModule } from './feature/stops/stop.module';
 import { TenantModule } from './feature/tenant/tenant.module';
-import { TenantMiddleware } from './infra/middleware/middleware';
+import { TenantMiddleware } from './infrastructure/middleware/middleware';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import databaseConfig from './infra/database/config/mikro-orm.config';
+import databaseConfig from './infrastructure/database/config/mikro-orm.config';
 // import {RequestContextModule} from 'nestjs-request-context'
 
 @Module({
