@@ -34,6 +34,21 @@ services:
       - ./shipment:/app
       - /app/node_modules
 
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+      - shipment
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
   pgadmin:
     image: dpage/pgadmin4
     container_name: nest-pgadmin4new

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { createShipment } from "./shipmentService";
+import { completeShipment, createShipment, getShipment, getShipmentById } from "./shipmentService";
 
 interface Shipment {
   id: string;
@@ -33,6 +33,39 @@ export const createShipmentThunk = createAsyncThunk(
   }
 );
 
+export const getShipmentThunk = createAsyncThunk(
+  "shipment/get",
+  async (schemaId: any, { rejectWithValue }) => {
+    try {
+      return await getShipment( schemaId);
+    } catch (err: any) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+export const getShipmentByIdThunk = createAsyncThunk(
+  "shipment/getbyid",
+  async ({id,schemaId}: any, { rejectWithValue }) => {
+    try {
+      return await getShipmentById(id, schemaId);
+    } catch (err: any) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+export const completeShipmentThunk = createAsyncThunk(
+  "shipment/complete",
+  async ({id,schemaId}: any, { rejectWithValue }) => {
+    try {
+      return await completeShipment(id, schemaId);
+    } catch (err: any) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
 const shipmentSlice = createSlice({
   name: "shipment",
   initialState,
@@ -54,7 +87,46 @@ const shipmentSlice = createSlice({
         state.error = null;
       })
       .addCase(createShipmentThunk.rejected, (state, action: any) => {
-        state.error = action.payload.error;
+        state.error = action.payload;
+        state.loading = false;
+      })
+
+      .addCase(getShipmentThunk.fulfilled, (state, action) => {
+        state.shipments = action.payload;
+        state.loading = false;
+      })
+      .addCase(getShipmentThunk.pending, (state, action) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getShipmentThunk.rejected, (state, action: any) => {
+        state.error = action.payload;
+        state.loading = false;
+      })
+
+      .addCase(getShipmentByIdThunk.fulfilled, (state, action) => {
+        state.currentShipment = action.payload;
+        state.loading = false;
+      })
+      .addCase(getShipmentByIdThunk.pending, (state, action) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getShipmentByIdThunk.rejected, (state, action: any) => {
+        state.error = action.payload;
+        state.loading = false;
+      })
+
+      .addCase(completeShipmentThunk.fulfilled, (state, action) => {
+        state.currentShipment = action.payload;
+        state.loading = false;
+      })
+      .addCase(completeShipmentThunk.pending, (state, action) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(completeShipmentThunk.rejected, (state, action: any) => {
+        state.error = action.payload;
         state.loading = false;
       })
 

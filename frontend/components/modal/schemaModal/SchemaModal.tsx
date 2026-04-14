@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useAppDispatch } from "@/redux/hooks";
 import { zodResolver } from '@hookform/resolvers/zod';
-import { createSchemaThunk } from "@/redux/features/schema/schemaSlice";
+import { createSchemaThunk, getSchemaThunk } from "@/redux/features/schema/schemaSlice";
 
 type SchemaModalProps = {
     close: () => void;
@@ -29,8 +29,8 @@ export default function SchemaModal({ close }: SchemaModalProps) {
     const onSubmit = async (formData: SchemaData) => {
         try {
             await dispatch(createSchemaThunk(formData)).unwrap();
-
-            setSnackbarMessage("Task added successfully!");
+            dispatch(getSchemaThunk());
+            setSnackbarMessage("Schema added successfully!");
             setSnackbarOpen(true);
 
             setTimeout(() => close(), 1000);

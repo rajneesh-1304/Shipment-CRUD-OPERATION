@@ -6,7 +6,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { useState } from "react";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { createShipmentThunk } from "@/redux/features/shipment/shipmentSlice";
+import { createShipmentThunk, getShipmentThunk } from "@/redux/features/shipment/shipmentSlice";
 
 type ShipmentModalProps = {
   close: () => void;
@@ -46,6 +46,7 @@ export default function ShipmentModal({ close }: ShipmentModalProps) {
   const onSubmit = async (data: ShipmentData) => {
     try {
       await dispatch(createShipmentThunk({data, schemaId})).unwrap();
+      dispatch(getShipmentThunk(schemaId));
       setSnackbarMessage("Shipment added");
       setSnackbarOpen(true);
       setTimeout(() => close(), 800);

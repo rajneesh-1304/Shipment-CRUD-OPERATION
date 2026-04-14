@@ -1,23 +1,45 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ShipmentModal from '../modal/Modal';
-import { useAppSelector } from '@/redux/hooks';
+import './shipment.css';
+import { getShipmentThunk } from '@/redux/features/shipment/shipmentSlice';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { useRouter } from 'next/navigation';
 
 const Shipment = () => {
     const [isOpen, setIsOpen] = useState(false);
     const schema = useAppSelector(state => state.schema?.currentSchema);
-    console.log("current schema in shipment page", schema);
+    const currentSchemaId = schema?.id;
+    const shipments = useAppSelector(state => state.shipment.shipments);
+    const dispatch = useAppDispatch();
+    const router = useRouter();
+    useEffect(() => {
+        dispatch(getShipmentThunk(currentSchemaId));
+    }, [])
     return (
         <>
             <div>
+                <h1 className='heading'>Shipments of Schema {schema?.name}</h1>
+                <div className='shipment-btn' onClick={() => setIsOpen(true)}>Add Shipment</div>
                 <div>
-
+                    {shipments?.map((shipment: any) => (
+                        <div className='card' key={shipment.id}
+                            onClick={() => {
+                                router.push(`/shipment/${shipment.id}`);
+                            }}
+                        >
+                            <div>
+                                Shipment: {shipment.title}
+                            </div>
+                            <div>
+                                Status: {shipment.status}
+                            </div>
+                        </div>
+                    ))}
                 </div>
-                <div onClick={() => setIsOpen(true)}>Add Shipment</div>
-
             </div>
 
-            {isOpen && <ShipmentModal close={()=>setIsOpen(false)}/>}
+            {isOpen && <ShipmentModal close={() => setIsOpen(false)} />}
         </>
     )
 }

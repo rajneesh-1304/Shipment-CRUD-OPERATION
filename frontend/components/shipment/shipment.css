@@ -1,0 +1,19 @@
+.card{
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin: 10px;
+}
+
+.shipment-btn{
+    margin:10px;
+    padding: 10px;
+    border: 2px solid rgb(108, 179, 181);
+    width: 130px;
+}
+
+.heading{
+  margin:10px;
+  font-size: 30px;
+  font-weight: 600;
+}

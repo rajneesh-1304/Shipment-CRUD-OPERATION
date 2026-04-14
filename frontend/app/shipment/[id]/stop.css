@@ -8,7 +8,7 @@
 
 .btn {
   padding: 8px 16px;
-  background-color: #333;
+  background-color: #69a280;
   color: white;
   border: none;
   cursor: pointer;
@@ -26,6 +26,9 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   margin: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .status{
@@ -36,4 +39,9 @@
   margin:10px;
   font-size: 30px;
   font-weight: 600;
+}
+
+.buttons{
+  display: flex;
+  gap: 10px;
 }
