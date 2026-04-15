@@ -7,14 +7,10 @@ const Schema = () => {
     return (
         <>
             <div>
-                <div>
-
-                </div>
                 <div onClick={() => setIsOpen(true)}>Add Schema</div>
-
             </div>
 
-            {isOpen && <SchemaModal close={()=>setIsOpen(false)}/>}
+            {isOpen && <SchemaModal close={() => setIsOpen(false)} />}
         </>
     )
 }

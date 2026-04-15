@@ -21,13 +21,6 @@ export class PickupService {
         }
         const stop = shipment.stops.find(s => s.id === stopId);
         if (!stop) throw new NotFoundException("Stop not found");
-        // const stops = await em.find(
-        //     Stop,
-        //     { shipment: { id: shipmentId } }, 
-        //     { populate: ['shipment'], orderBy: { sequenceNumber: 'ASC' }, schema: schema }
-        // );
-
-        // shipment.checkPrevious(stop.sequenceNumber);
         shipment.checkPrevious(stop.sequenceNumber);
         stop.checkPickup();
 

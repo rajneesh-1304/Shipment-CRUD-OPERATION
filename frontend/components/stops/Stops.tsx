@@ -31,7 +31,7 @@ const Stops = () => {
             setSnackbarMessage(successMessage);
             setSnackbarOpen(true);
         } catch (err: any) {
-            setSnackbarMessage(stopError);
+            setSnackbarMessage(stopError || 'an error occured');
             setSnackbarOpen(true);
         }
     }
@@ -64,19 +64,19 @@ const Stops = () => {
             setSnackbarMessage(response.message);
             setSnackbarOpen(true);
         } catch (err: any) {
-            setSnackbarMessage(shipmentError);
+            setSnackbarMessage(shipmentError || 'an error occured');
             setSnackbarOpen(true);
         }
     }
 
     return (
-            <Box sx={{height:'100vh', width:'100vw',padding:'20px'}}>
+            <Box className='stops-main'>
                 <h1 className='head'>Shipment {shipment?.title} details</h1>
                 <div className='shipment'>
                     <div>
                         <div className='status'>Shipment Status: {shipment?.status}</div>
                     </div>
-                    {shipment.status === 'PENDING' && <button className='btn' onClick={() => {
+                    {shipment.status === 'PENDING' && <button className='bttn' onClick={() => {
                         handleCompleteShipment(shipment?.id)
                     }}>
                         {shipment?.status === 'PENDING' ? 'PENDING' : 'COMPLETED'}
@@ -91,12 +91,12 @@ const Stops = () => {
                                 <div>Stop Shipment Status: {stop?.shipmentStatus}</div>
                             </div>
                             <div className='buttons'>
-                                <button className='btn' onClick={() => handleArrive(stop?.id)}>
+                                <button className='bttn' onClick={() => handleArrive(stop?.id)}>
                                     {stop?.status === 'TRANSIT' ? 'Arrive at location' : (stop?.status === 'ARRIVED' ? 'Arrived' : 'Departed')}
                                 </button>
 
                                 {stop.shipmentStatus === 'Pending' && (
-                                    <button className='btn' onClick={() => {
+                                    <button className='bttn' onClick={() => {
                                         stop?.type === 'PICKUP' ? handlePick(stop?.id) : handleDeliver(stop?.id)
                                     }}>
                                         {stop?.type === 'PICKUP' ? 'Pickup' : 'Deliver'}

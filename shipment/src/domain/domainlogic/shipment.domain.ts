@@ -22,7 +22,7 @@ export class ShipmentDomain {
     if (!stops.length) {
       throw new BadRequestException('At least one stop required');
     }
-    const set = new Set<number>();
+    const set = new Set();
     for (const stop of stops) {
       if (set.has(stop.sequenceNumber)) {
         throw new BadRequestException('Duplicate sequence number');

@@ -21,15 +21,6 @@ export class DeliveryService {
             throw new NotFoundException("Shipment not found");
         }
 
-        // const stops = await em.find(
-        //     Stop,
-        //     { shipment: { id: shipmentId } },
-        //     { populate: ['shipment'], orderBy: { sequenceNumber: 'ASC' }, schema: schema }
-        // );
-
-        // // shipment.checkPrevious();
-        // const stopDomain = new StopDomain();
-        // stopDomain.checkDelivery();
         const stop = shipment.stops.find(s => s.id === stopId);
         if (!stop) throw new NotFoundException("Stop not found");
 

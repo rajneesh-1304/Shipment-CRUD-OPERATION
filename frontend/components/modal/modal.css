@@ -13,7 +13,8 @@
 .modal {
   background: white;
   padding: 20px;
-  width: 320px;
+  width: 350px;
+  text-align: center;
   border-radius: 10px;
 }
 
@@ -21,6 +22,11 @@
   border: 1px solid #ccc;
   padding: 10px;
   margin-top: 10px;
+}
+
+.stop-heading{
+  margin-top: 8px;
+  margin-bottom:2px;
 }
 
 .actions {

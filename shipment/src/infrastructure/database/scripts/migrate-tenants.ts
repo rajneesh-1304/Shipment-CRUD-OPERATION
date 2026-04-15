@@ -5,8 +5,7 @@ import { Injectable } from "@nestjs/common";
 export class CreateSchema {
     constructor(private readonly orm: MikroORM) {}
     
-    async createSchema(schema) {
-        console.log(schema, 'hello i am schema ')
+    async createSchema(schema: string) {
         this.orm.config.set('schema', schema);
         await this.orm.em.getContext().getConnection().execute(
             `set search_path to "${schema}"`

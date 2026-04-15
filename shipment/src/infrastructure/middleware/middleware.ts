@@ -1,4 +1,4 @@
-import { EntityManager, MikroORM, RequestContext } from "@mikro-orm/postgresql";
+import { MikroORM, RequestContext } from "@mikro-orm/postgresql";
 import { BadRequestException, Injectable, NestMiddleware } from "@nestjs/common";
 import { Tenant } from "src/domain/entity/tenant.entity";
 

@@ -4,7 +4,7 @@ import {
     Injectable,
     NotFoundException,
 } from '@nestjs/common';
-import { Shipment, STATUS } from '../../../domain/entity/shipment.entity';
+import { Shipment } from '../../../domain/entity/shipment.entity';
 
 @Injectable()
 export class CompleteShipmentService {

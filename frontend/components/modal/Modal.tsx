@@ -1,7 +1,7 @@
 'use client';
 import "./modal.css";
 import * as z from "zod";
-import {  Box,  Button,  FormControl,  FormHelperText,  InputLabel,  MenuItem,  Select,  Snackbar,  TextField} from "@mui/material";
+import { Box, Button, FormControl, FormHelperText, InputLabel, MenuItem, Select, Snackbar, TextField } from "@mui/material";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useState } from "react";
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -45,7 +45,7 @@ export default function ShipmentModal({ close }: ShipmentModalProps) {
 
   const onSubmit = async (data: ShipmentData) => {
     try {
-      await dispatch(createShipmentThunk({data, schemaId})).unwrap();
+      await dispatch(createShipmentThunk({ data, schemaId })).unwrap();
       dispatch(getShipmentThunk(schemaId));
       setSnackbarMessage("Shipment added");
       setSnackbarOpen(true);
@@ -77,7 +77,7 @@ export default function ShipmentModal({ close }: ShipmentModalProps) {
 
           {fields.map((field, index) => (
             <div key={field.id} className="stopBox">
-
+              <h1 className="stop-heading">Add Stop</h1>
               <TextField
                 label="Sequence"
                 size="small"
@@ -91,9 +91,9 @@ export default function ShipmentModal({ close }: ShipmentModalProps) {
 
               <FormControl fullWidth size="small">
                 <InputLabel>Type</InputLabel>
-                <Select 
-                defaultValue={field.type}
-                {...register(`stops.${index}.type`)}>
+                <Select
+                  defaultValue={field.type}
+                  {...register(`stops.${index}.type`)}>
                   <MenuItem value="PICKUP">PICKUP</MenuItem>
                   <MenuItem value="DELIVERY">DELIVERY</MenuItem>
                 </Select>
@@ -122,12 +122,12 @@ export default function ShipmentModal({ close }: ShipmentModalProps) {
 
           <div className="btns">
             <Button type="submit" variant="contained" size="small">
-            Save
-          </Button>
+              Save
+            </Button>
 
-          <Button onClick={close} size="small">
-            Cancel
-          </Button>
+            <Button onClick={close} size="small">
+              Cancel
+            </Button>
           </div>
 
         </form>
