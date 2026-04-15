@@ -30,6 +30,8 @@
   border-left: 5px solid rgb(89, 189, 167);
   height: 50px;
   width: 100%;
+  display: flex;
+  align-items: center;
 }
 
 .status{
@@ -53,4 +55,33 @@
 .schema-btn{
   display: flex;
   justify-content: flex-end;
+}
+
+@media (max-width: 768px){
+  .head{
+    font-size: 18px;
+  }
+
+  .btn {
+  padding: 4px 8px;
+  width: 80px;
+  font-size: 12px;
+  margin-right: 5px;
+}
+
+.schema-head{
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.list-all {
+  gap: 6px;
+}
+
+.card {
+  padding: 5px;
+  height: 30px;
+  width: 100%;
+}
+
 }

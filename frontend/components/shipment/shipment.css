@@ -16,7 +16,7 @@
     border-radius: 10px;
 }
 
-.heading {
+.headingg {
     margin: 10px;
     font-size: 30px;
     font-weight: 600;
@@ -31,4 +31,23 @@
 .shipment-btn {
     display: flex;
     justify-content: flex-end;
+}
+
+@media (max-width: 768px) {
+    .headingg {
+        font-size: 18px;
+    }
+
+    .shipmentbtn {
+    padding: 3px;
+    font-size: 12px;
+    width: 80px;
+    }
+
+    .shipment-card {
+    padding: 5px;
+    margin: 5px;
+    height: 50px;
+    font-size: 12px;
+}
 }

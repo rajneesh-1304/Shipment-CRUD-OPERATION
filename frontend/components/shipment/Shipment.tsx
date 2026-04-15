@@ -21,7 +21,7 @@ const Shipment = () => {
     return (
         <>
             <div className='containerr'>
-                <h1 className='heading'>Shipments of Schema {schema?.name}</h1>
+                <h1 className='headingg'>Shipments of Schema {schema?.name}</h1>
                 <div className='shipment-btn'>
                     <button className='shipmentbtn' onClick={() => setIsOpen(true)}>Add Shipment</button>
                 </div>

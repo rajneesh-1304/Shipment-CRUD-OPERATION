@@ -59,3 +59,33 @@
   color: rgb(106, 167, 123);
   text-align: center;
 }
+
+@media (max-width: 768px){
+  .head{
+    font-size: 18px;
+  }
+
+  .btn {
+  padding: 4px 8px;
+  width: 80px;
+  font-size: 12px;
+  margin-right: 5px;
+}
+
+.all-list {
+  gap: 5px;
+  margin-top: 5px;
+}
+
+.all-card {
+  padding: 5px;
+  margin: 5px;
+  font-size: 12px;
+}
+
+
+.status{
+  font-size: 12px;
+}
+
+}

@@ -16,8 +16,8 @@ const Stops = () => {
     const schema = useAppSelector(state => state.schema.currentSchema);
     const schemaId = schema?.id;
     const shipment: any = useAppSelector(state => state.shipment.currentShipment);
-    const stopError = useAppSelector(state => state.stop.error);
-    const shipmentError = useAppSelector(state => state.shipment.error);
+    const stopError: any = useAppSelector(state => state.stop.error);
+    const shipmentError: any = useAppSelector(state => state.shipment.error);
     useEffect(() => {
         if (id && schemaId) {
             dispatch(getShipmentByIdThunk({ id, schemaId }));
@@ -31,7 +31,7 @@ const Stops = () => {
             setSnackbarMessage(successMessage);
             setSnackbarOpen(true);
         } catch (err: any) {
-            setSnackbarMessage(stopError || shipmentError || "An error occurred");
+            setSnackbarMessage(stopError);
             setSnackbarOpen(true);
         }
     }
@@ -64,7 +64,7 @@ const Stops = () => {
             setSnackbarMessage(response.message);
             setSnackbarOpen(true);
         } catch (err: any) {
-            setSnackbarMessage(shipmentError || "An error occurred");
+            setSnackbarMessage(shipmentError);
             setSnackbarOpen(true);
         }
     }
