@@ -6,9 +6,8 @@ export const createSchema = async (data: any) => {
     const url = `${BASE_URL}/tenants`
     const res = await axios.post(url, data);
     return res.data;
-  } catch (error) {
-    console.error("Error in creating schema ", error);
-    throw error;
+  } catch (error: any) {
+    throw error.response.data;
   }
 }
 
@@ -17,8 +16,7 @@ export const getSchema = async () => {
     const url = `${BASE_URL}/tenants`
     const res = await axios.get(url);
     return res.data;
-  } catch (error) {
-    console.error("Error in getting schema ", error);
-    throw error;
+  } catch (error: any) {
+    throw error.response.data;
   }
 }

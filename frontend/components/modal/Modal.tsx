@@ -29,7 +29,7 @@ export default function ShipmentModal({ close }: ShipmentModalProps) {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const dispatch = useAppDispatch();
   const currentSchema = useAppSelector(state => state.schema?.currentSchema);
-  const schemaId = currentSchema?.id;
+  const schemaId: any = currentSchema?.id;
   const { register, handleSubmit, control, formState: { errors }, reset } =
     useForm<ShipmentData>({
       resolver: zodResolver(ShipmentSchema),
@@ -61,7 +61,7 @@ export default function ShipmentModal({ close }: ShipmentModalProps) {
     <div className="main_modal">
       <div className="modal">
 
-        <h3>Add Shipment</h3>
+        <h3 className='shipmentHeading'>Add Shipment</h3>
 
         <form onSubmit={handleSubmit(onSubmit)}>
 
@@ -120,13 +120,15 @@ export default function ShipmentModal({ close }: ShipmentModalProps) {
 
           <br /><br />
 
-          <Button type="submit" variant="contained" size="small">
+          <div className="btns">
+            <Button type="submit" variant="contained" size="small">
             Save
           </Button>
 
           <Button onClick={close} size="small">
             Cancel
           </Button>
+          </div>
 
         </form>
       </div>

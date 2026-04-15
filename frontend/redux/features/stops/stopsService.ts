@@ -11,9 +11,8 @@ export const arriveAtStop = async (shipmentId: string, stopId: string, schemaId:
             }
         });
         return res.data;
-    } catch (error) {
-        console.error("Error in arriving at stop of shipment", error);
-        throw error;
+    } catch (error: any) {
+        throw error.response.data;
     }
 };
 
@@ -27,9 +26,8 @@ export const pickupAtStop = async (shipmentId: string, stopId: string, schemaId:
             }
         });
         return res.data;
-    } catch (error) {
-        console.error("Error in pickup at stop of shipment", error);
-        throw error;
+    } catch (error: any) {
+        throw error.response.data;
     }
 };
 
@@ -44,8 +42,7 @@ export const deliverAtStop = async (shipmentId: string, stopId: string, schemaId
             }
         });
         return res.data;
-    } catch (error) {
-        console.error("Error in delivering at stop of shipment", error);
-        throw error;
+    } catch (error: any) {
+        throw error.response.data;
     }
 };

@@ -7,7 +7,6 @@ const databaseConfig: Options = defineConfig({
     
     driver: PostgreSqlDriver,
     dbName: process.env.DB_NAME ?? "shipment",
-    contextName: '',
     port: Number(process.env.DB_PORT ?? "5432"),
     host: process.env.DB_HOST ?? "db",
     user: process.env.DB_USER ?? "postgres",

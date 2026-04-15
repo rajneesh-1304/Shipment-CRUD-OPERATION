@@ -14,16 +14,20 @@ const Shipment = () => {
     const dispatch = useAppDispatch();
     const router = useRouter();
     useEffect(() => {
-        dispatch(getShipmentThunk(currentSchemaId));
+        if(currentSchemaId){
+            dispatch(getShipmentThunk(currentSchemaId));
+        }
     }, [])
     return (
         <>
-            <div>
+            <div className='containerr'>
                 <h1 className='heading'>Shipments of Schema {schema?.name}</h1>
-                <div className='shipment-btn' onClick={() => setIsOpen(true)}>Add Shipment</div>
+                <div className='shipment-btn'>
+                    <button className='shipmentbtn' onClick={() => setIsOpen(true)}>Add Shipment</button>
+                </div>
                 <div>
                     {shipments?.map((shipment: any) => (
-                        <div className='card' key={shipment.id}
+                        <div className='shipment-card' key={shipment.id}
                             onClick={() => {
                                 router.push(`/shipment/${shipment.id}`);
                             }}

@@ -13,7 +13,7 @@ import {
 import storage from "redux-persist/lib/storage";
 import schemaReducer from './features/schema/schemaSlice';
 import shipmentReducer from './features/shipment/shipmentSlice';
-import stopReducer from './features/stops/stopsSlice'
+import stopReducer from './features/stops/stopsSlice';
 
 const persistConfig = {
   key: "root",
@@ -31,7 +31,7 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
   reducer: persistedReducer,
-  middleware: (getDefaultMiddleware: any) =>
+  middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
@@ -39,7 +39,7 @@ export const store = configureStore({
     }),
 });
 
+export const persistor = persistStore(store);
+
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
-
-export const persistor = persistStore(store);

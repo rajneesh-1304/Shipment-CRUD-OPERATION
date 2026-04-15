@@ -27,7 +27,7 @@ export const createSchemaThunk = createAsyncThunk(
       console.log(data, 'this is schema data ')
       return await createSchema(data);
     } catch (err: any) {
-      return rejectWithValue(err.response.data.title);
+      return rejectWithValue(err.title);
     }
   }
 );
@@ -39,7 +39,7 @@ export const getSchemaThunk = createAsyncThunk(
     try {
       return await getSchema();
     } catch (err: any) {
-      return rejectWithValue(err.response.data.title);
+      return rejectWithValue(err.title);
     }
   }
 );

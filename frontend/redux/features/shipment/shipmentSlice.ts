@@ -28,18 +28,18 @@ export const createShipmentThunk = createAsyncThunk(
     try {
       return await createShipment(data, schemaId);
     } catch (err: any) {
-      return rejectWithValue(err.response.data.title);
+      return rejectWithValue(err.title);
     }
   }
 );
 
 export const getShipmentThunk = createAsyncThunk(
   "shipment/get",
-  async (schemaId: any, { rejectWithValue }) => {
+  async (schemaId: string, { rejectWithValue }) => {
     try {
       return await getShipment( schemaId);
     } catch (err: any) {
-      return rejectWithValue(err.response.data.title);
+      return rejectWithValue(err.title);
     }
   }
 );
@@ -50,7 +50,7 @@ export const getShipmentByIdThunk = createAsyncThunk(
     try {
       return await getShipmentById(id, schemaId);
     } catch (err: any) {
-      return rejectWithValue(err.response.data.title);
+      return rejectWithValue(err.title);
     }
   }
 );
@@ -61,7 +61,7 @@ export const completeShipmentThunk = createAsyncThunk(
     try {
       return await completeShipment(id, schemaId);
     } catch (err: any) {
-      return rejectWithValue(err.response.data.title);
+      return rejectWithValue(err.title);
     }
   }
 );

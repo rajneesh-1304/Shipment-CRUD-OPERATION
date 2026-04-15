@@ -17,7 +17,7 @@ export const arriveAtStopThunk = createAsyncThunk(
     try {
       return await arriveAtStop(shipmentId, stopId, schemaId);
     } catch (err: any) {
-      return rejectWithValue(err.response.data.title);
+      return rejectWithValue(err.title);
     }
   }
 );
@@ -29,7 +29,7 @@ export const pickupAtStopThunk = createAsyncThunk(
       return await pickupAtStop(shipmentId, stopId, schemaId);
     } catch (err: any) {
       console.log(err, 'this is error ')
-      return rejectWithValue(err.response.data.title);
+      return rejectWithValue(err.title);
     }
   }
 );
@@ -41,7 +41,7 @@ export const deliverAtStopThunk = createAsyncThunk(
       return await deliverAtStop(shipmentId, stopId, schemaId);
     } catch (err: any) {
       console.log(err, 'this is error ')
-      return rejectWithValue(err.response.data.title);
+      return rejectWithValue(err.title);
     }
   }
 );

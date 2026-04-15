@@ -1,6 +1,6 @@
 'use client'
+import SchemaModal from '@/components/modal/schemaModal/SchemaModal';
 import React, { useState } from 'react'
-import SchemaModal from '../modal/Modal';
 
 const Schema = () => {
     const [isOpen, setIsOpen] = useState(false);
